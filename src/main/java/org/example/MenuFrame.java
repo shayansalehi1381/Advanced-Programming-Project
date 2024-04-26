@@ -40,7 +40,7 @@ public class MenuFrame extends JFrame implements ActionListener{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Adding a shutdown hook to restore minimized windows when the program stops
-      //  Runtime.getRuntime().addShutdownHook(new Thread(() -> restoreAllWindows()));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> restoreAllWindows()));
     }
 
 
