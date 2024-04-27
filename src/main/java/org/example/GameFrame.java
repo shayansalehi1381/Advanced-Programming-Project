@@ -2,8 +2,12 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameFrame extends JFrame implements Runnable{
      GamePanel gamePanel;
@@ -11,14 +15,18 @@ public class GameFrame extends JFrame implements Runnable{
     int height = 700;
     int targetWidth = 200;
     int targetHeight = 200;
-    int fps = 60; // Adjust as needed
-    int animationDuration = 3000;
+    int fps = 60;
+    int animationDuration = 4000;
+    double lastTime;
+    double endTime;
+    double timeLeft;
+    Thread gameThread;
 
     public GameFrame() {
 
-        gamePanel = new GamePanel();
-
-
+        gamePanel = new GamePanel(this);
+        gameThread = new Thread(this);
+        gameThread.start();
         this.setTitle("Window Kill");
         this.add(gamePanel);
         this.setSize(width, height);
@@ -27,44 +35,85 @@ public class GameFrame extends JFrame implements Runnable{
         this.setVisible(true);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
-
-        new Thread(this).start();
-
-
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Schedule frame size reduction after 1 second (you can adjust this)
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                shrinkFrame();
+            }
+        }, 5000);
     }
 
-    @Override
-    public void run() {
-        int totalSteps = fps * (animationDuration / 1000); // Total number of steps
-        int initialX = getX(); // Initial X position
-        int initialY = getY(); // Initial Y position
-        int initialWidth = getWidth(); // Initial width
-        int initialHeight = getHeight(); // Initial height
+    private void shrinkFrame() {
+        int animationDurationMs = 4000; // 4 seconds in milliseconds
+        long startTime = System.currentTimeMillis();
 
-        int stepWidth = (initialWidth - targetWidth) / totalSteps;
-        int stepHeight = (initialHeight - targetHeight) / totalSteps;
+        while (true) {
+            long currentTime = System.currentTimeMillis();
+            double progress = (double) (currentTime - startTime) / animationDurationMs;
 
-        while (getWidth() > targetWidth && getHeight() > targetHeight) {
-            // Gradually decrease the frame size
-            setSize(Math.max(getWidth() - stepWidth, targetWidth), Math.max(getHeight() - stepHeight, targetHeight));
+            // Calculate new width and height based on progress and target size
+            int newWidth = (int) (width + (targetWidth - width) * progress);
+            int newHeight = (int) (height + (targetHeight - height) * progress);
 
-            // Adjust frame position to keep it centered
-            int dx = (initialWidth - getWidth()) / 2;
-            int dy = (initialHeight - getHeight()) / 2;
-            setLocation(initialX + dx, initialY + dy);
+            // Set the new frame size
+            this.setSize(newWidth, newHeight);
 
-            // Repaint the game panel
-            gamePanel.repaint();
+            // Check if target size is reached, break if so
+            if (newWidth <= 200 && newHeight <= 200) {
+                break;
 
-            // Sleep to control the FPS
+            }
+
             try {
-                Thread.sleep(1000 / fps);
+                // Sleep for a short duration to avoid rapid resizing
+                Thread.sleep(16); // Adjust sleep time as needed
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
+
+
+
+
+
+
+
+    @Override
+    public void run() {
+        long lastTime = System.nanoTime();
+        double targetFrameTime = 1000000000.0 / fps;
+        double delta = 0;
+        long timer = System.currentTimeMillis();
+
+        while (true) {
+            long now = System.nanoTime();
+            delta += (now - lastTime) / targetFrameTime;
+            lastTime = now;
+
+            while (delta >= 1) {
+                gamePanel.checkCollisions();
+                gamePanel.move();
+                delta--;
+            }
+
+            gamePanel.repaint();
+
+            if (System.currentTimeMillis() - timer >= 1000) {
+                timer += 1000;
+            }
+        }
     }
+
+  /*  public static void main(String[] args) {
+        new GameFrame();
+    }*/
+
+}
+
+
 
 
 
