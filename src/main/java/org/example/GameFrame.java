@@ -21,6 +21,7 @@ public class GameFrame extends JFrame implements Runnable{
     double endTime;
     double timeLeft;
     Thread gameThread;
+    boolean isShrinking = false;
 
     public GameFrame() {
 
@@ -29,11 +30,10 @@ public class GameFrame extends JFrame implements Runnable{
         gameThread.start();
         this.setTitle("Window Kill");
         this.add(gamePanel);
-        this.setSize(width, height);
+       this.setBounds(0,0,width,height);
         this.setUndecorated(true);
         this.setLocationByPlatform(true);
         this.setVisible(true);
-        this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // Schedule frame size reduction after 1 second (you can adjust this)
@@ -46,6 +46,7 @@ public class GameFrame extends JFrame implements Runnable{
     }
 
     private void shrinkFrame() {
+        isShrinking = true;
         int animationDurationMs = 4000; // 4 seconds in milliseconds
         long startTime = System.currentTimeMillis();
 
@@ -62,6 +63,7 @@ public class GameFrame extends JFrame implements Runnable{
 
             // Check if target size is reached, break if so
             if (newWidth <= 200 && newHeight <= 200) {
+                isShrinking = false;
                 break;
 
             }
@@ -96,10 +98,12 @@ public class GameFrame extends JFrame implements Runnable{
             while (delta >= 1) {
                 gamePanel.checkCollisions();
                 gamePanel.move();
+                gamePanel.repaint();
+
                 delta--;
             }
 
-            gamePanel.repaint();
+
 
             if (System.currentTimeMillis() - timer >= 1000) {
                 timer += 1000;
@@ -107,10 +111,10 @@ public class GameFrame extends JFrame implements Runnable{
         }
     }
 
-  /*  public static void main(String[] args) {
-        new GameFrame();
-    }*/
+   public static void main(String[] args) {
+       new GameFrame();
 
+   }
 }
 
 

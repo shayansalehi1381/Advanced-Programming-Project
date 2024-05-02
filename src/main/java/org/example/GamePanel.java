@@ -12,7 +12,7 @@ public class GamePanel extends JPanel  {
     public GamePanel(GameFrame frame){
         super();
         gameFrame = frame;
-        epsilon = new Epsilon();
+        epsilon = new Epsilon(gameFrame);
         setBackground(Color.BLACK);
         setFocusable(true); // Make the panel focusable
         requestFocusInWindow(); // Request focus when the frame is initialized
