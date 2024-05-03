@@ -10,15 +10,19 @@ public class Shot extends Rectangle {
     int yPos;
     int width = 5;
     int height = 5;
-    int speed = 5;
+    int speed = 10;
     boolean moving = false;
     int targetX;
     int targetY;
     int directionX;
     int directionY;
+    boolean removedFromList = false;
+    int ID;
+    static int nextID = 1;
 
     public Shot(Epsilon epsilon){
         this.epsilon = epsilon;
+        ID = nextID++;
         xPos = epsilon.xPos + 15;
         yPos = epsilon.yPos + 15;
     }

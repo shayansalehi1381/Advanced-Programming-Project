@@ -44,15 +44,20 @@ public class GamePanel extends JPanel  {
             Shot shot = epsilon.shots.get(i);
             {
                 if (GameFrame.collidDownWithShot == true || GameFrame.collidUpWithShot == true) {
-                    gameFrame.increasePanelHeight();
+
                 epsilon.shots.remove(shot);
+                    gameFrame.increasePanelHeight();
+
 
                 } else if (GameFrame.collidLeftWithShot == true || GameFrame.collidRightWithShot == true) {
-                    gameFrame.increasePanelWidth();
+
                     epsilon.shots.remove(shot);
+                    gameFrame.increasePanelWidth();
+
                 }
 
             }
+            break;
         }
     }
 

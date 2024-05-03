@@ -8,15 +8,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-public class Epsilon extends Rectangle implements KeyListener , MouseListener {
+public class Epsilon extends Rectangle implements KeyListener, MouseListener {
     GameFrame gameFrame;
     public ArrayList<Shot> shots = new ArrayList<>();
     int xPos = 300;
     int yPos = 300;
     int width = 30;
     int height = 30;
-    int xSpeed ;
-    int ySpeed ;
+    int xSpeed;
+    int ySpeed;
 
     boolean S_Key = false;
     boolean W_Key = false;
@@ -27,7 +27,7 @@ public class Epsilon extends Rectangle implements KeyListener , MouseListener {
     boolean collidWithUp = false;
     boolean collidWithDown = false;
 
-    public Epsilon(GameFrame gameFrame){
+    public Epsilon(GameFrame gameFrame) {
 
         super();
         this.gameFrame = gameFrame;
@@ -36,7 +36,7 @@ public class Epsilon extends Rectangle implements KeyListener , MouseListener {
 
     public void paint(Graphics g) {
         g.setColor(Color.red);
-        g.fillOval(xPos,yPos,width,height);
+        g.fillOval(xPos, yPos, width, height);
 
         for (int i = 0; i < shots.size(); i++) {
             Shot shot = shots.get(i);
@@ -44,13 +44,13 @@ public class Epsilon extends Rectangle implements KeyListener , MouseListener {
         }
     }
 
-    public void move(){
-                if (collidWithRight == true || collidWithLeft == true){
-                    xSpeed = 0;
-                }
-                if (collidWithUp == true || collidWithDown == true){
-                    ySpeed = 0;
-                }
+    public void move() {
+        if (collidWithRight == true || collidWithLeft == true) {
+            xSpeed = 0;
+        }
+        if (collidWithUp == true || collidWithDown == true) {
+            ySpeed = 0;
+        }
         xPos += xSpeed;
         yPos += ySpeed;
 
@@ -68,94 +68,89 @@ public class Epsilon extends Rectangle implements KeyListener , MouseListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_W){
+        if (e.getKeyCode() == KeyEvent.VK_W) {
             W_Key = true;
-            if (collidWithDown == true){
+            if (collidWithDown == true) {
                 collidWithDown = false;
             }
-                if (S_Key == true){
-                    setDirectionY(0);
-                    move();
-                }
-                else
-                    setDirectionY(-3);
+            if (S_Key == true) {
+                setDirectionY(0);
                 move();
+            } else
+                setDirectionY(-3);
+            move();
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_S){
+        if (e.getKeyCode() == KeyEvent.VK_S) {
             S_Key = true;
-            if (collidWithUp == true){
+            if (collidWithUp == true) {
                 collidWithUp = false;
             }
 
-                if (W_Key == true){
-                    setDirectionY(0);
-                    move();
-                }
-                else
-                    setDirectionY(3);
+            if (W_Key == true) {
+                setDirectionY(0);
                 move();
+            } else
+                setDirectionY(3);
+            move();
         }
         //*****************************************************************
-        if (e.getKeyCode() == KeyEvent.VK_D){
+        if (e.getKeyCode() == KeyEvent.VK_D) {
             D_Key = true;
-            if (collidWithLeft == true){
+            if (collidWithLeft == true) {
                 collidWithLeft = false;
             }
-                if (A_Key == true){
-                    setDirectionX(0);
-                    move();
-                }
-                else
-                    setDirectionX(3);
+            if (A_Key == true) {
+                setDirectionX(0);
                 move();
+            } else
+                setDirectionX(3);
+            move();
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_A){
+        if (e.getKeyCode() == KeyEvent.VK_A) {
             A_Key = true;
-            if (collidWithRight == true){
+            if (collidWithRight == true) {
                 collidWithRight = false;
             }
-                if (D_Key == true){
-                    setDirectionX(0);
-                    move();
-                }
-                else
-                    setDirectionX(-3);
+            if (D_Key == true) {
+                setDirectionX(0);
                 move();
+            } else
+                setDirectionX(-3);
+            move();
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_W){
+        if (e.getKeyCode() == KeyEvent.VK_W) {
             W_Key = false;
-           setDirectionY(0);
+            setDirectionY(0);
             move();
-        }
-
-        else if (e.getKeyCode() == KeyEvent.VK_S){
+        } else if (e.getKeyCode() == KeyEvent.VK_S) {
             S_Key = false;
             setDirectionY(0);
             move();
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_D){
+        if (e.getKeyCode() == KeyEvent.VK_D) {
             D_Key = false;
             setDirectionX(0);
             move();
         }
-        if (e.getKeyCode() == KeyEvent.VK_A){
+        if (e.getKeyCode() == KeyEvent.VK_A) {
             A_Key = false;
             setDirectionX(0);
             move();
         }
     }
 
-    public void setDirectionX(int number){
+    public void setDirectionX(int number) {
         xSpeed = number;
     }
-    public void setDirectionY(int number){
+
+    public void setDirectionY(int number) {
         ySpeed = number;
     }
 
@@ -168,8 +163,7 @@ public class Epsilon extends Rectangle implements KeyListener , MouseListener {
             } else if (xPos + width >= gameFrame.gamePanel.getX() + gameFrame.gamePanel.getWidth()) {
                 collidWithRight = true;
                 collidWithLeft = false;
-            }
-            else {
+            } else {
                 collidWithRight = false;
                 collidWithLeft = false;
             }
@@ -179,22 +173,21 @@ public class Epsilon extends Rectangle implements KeyListener , MouseListener {
             if (yPos <= gameFrame.gamePanel.getY()) {
                 collidWithUp = true;
                 collidWithDown = false;
-            } else if (yPos + height >= gameFrame.gamePanel.getY() + gameFrame.gamePanel.getHeight()){
+            } else if (yPos + height >= gameFrame.gamePanel.getY() + gameFrame.gamePanel.getHeight()) {
                 collidWithDown = true;
                 collidWithUp = false;
-            }
-            else {
+            } else {
                 collidWithDown = false;
                 collidWithUp = false;
             }
         }
-        if (gameFrame.isShrinking == true){
-            if (collidWithDown == true){
+        if (gameFrame.isShrinking == true) {
+            if (collidWithDown == true) {
 
-               yPos = gameFrame.gamePanel.getHeight() - height;
+                yPos = gameFrame.gamePanel.getHeight() - height;
             }
 
-            if (collidWithRight == true){
+            if (collidWithRight == true) {
                 xPos = gameFrame.gamePanel.getWidth() - width;
             }
 
@@ -204,11 +197,11 @@ public class Epsilon extends Rectangle implements KeyListener , MouseListener {
 
         //******************************************************************
         //collision of Shots to the frame:
-        for (Shot shot:shots){
+        for (int i = 0; i < this.shots.size(); i++) {
+            Shot shot = shots.get(i);
             shot.checkCollisionWithFrame();
         }
     }
-
 
 
     @Override

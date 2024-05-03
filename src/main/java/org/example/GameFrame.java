@@ -9,22 +9,22 @@ import java.awt.event.ComponentEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class GameFrame extends JFrame implements Runnable{
-     GamePanel gamePanel;
+public class GameFrame extends JFrame implements Runnable {
+    GamePanel gamePanel;
+    int xFrame = 400;
+    int yFrame = 50;
     int width = 700;
     int height = 700;
     int targetWidth = 200;
     int targetHeight = 200;
     int fps = 60;
-    int animationDuration = 4000;
-    double lastTime;
-    double endTime;
-    double timeLeft;
+
     Thread gameThread;
     boolean isShrinking = false;
     int newWidth;
     int newHeight;
-
+    int timeDelay = 5000;
+    int firstDelay = 0;
     static boolean collidUpWithShot = false;
     static boolean collidDownWithShot = false;
     static boolean collidRightWithShot = false;
@@ -37,81 +37,105 @@ public class GameFrame extends JFrame implements Runnable{
         gameThread.start();
         this.setTitle("Window Kill");
         this.add(gamePanel);
-       this.setBounds(0,0,width,height);
+        this.setBounds(xFrame, yFrame, width, height);
         this.setUndecorated(true);
-        this.setLocationByPlatform(true);
+        //  this.setLocationByPlatform(true);
         this.setVisible(true);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // Schedule frame size reduction after 1 second (you can adjust this)
+
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                shrinkFrame();
+                while (true){
+                    shrinkFrame();
+
+                }
+
             }
-        }, 5000);
+        }, timeDelay);
     }
 
     private void shrinkFrame() {
         isShrinking = true;
-        int animationDurationMs = 4000; // 4 seconds in milliseconds
+        int animationDurationMs = 10000;
         long startTime = System.currentTimeMillis();
 
         while (true) {
             long currentTime = System.currentTimeMillis();
+
             double progress = (double) (currentTime - startTime) / animationDurationMs;
 
             // Calculate new width and height based on progress and target size
 
-             newWidth = (int) (700 + (targetWidth - 700) * progress);
-             newHeight = (int) (700 + (targetHeight - 700) * progress);
-             width = newWidth;
-             height = newHeight;
+            newWidth = (int) (width + (targetWidth - width) * progress);
+            newHeight = (int) (height + (targetHeight - height) * progress);
+           // width = newWidth;
+          //  height = newHeight;
             // Set the new frame size
-            this.setSize(width, height);
+            this.setSize(newWidth, newHeight);
 
             // Check if target size is reached, break if so
             if (newWidth <= 200 && newHeight <= 200) {
                 width = newWidth;
                 height = newHeight;
                 isShrinking = false;
-                break;
+
 
             }
 
-            try {
-                // Sleep for a short duration to avoid rapid resizing
-                Thread.sleep(16); // Adjust sleep time as needed
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
         }
     }
+
     public void increasePanelHeight() {
-            if (isShrinking == false){
-                height += 10;
-                gamePanel.setPreferredSize(new Dimension(width, height)); // Update panel size
-                gamePanel.revalidate(); // Revalidate the panel to ensure layout recalculation
-                gamePanel.repaint(); // Repaint the panel
-                System.out.println(width);
-                pack(); // Resize the frame to fit the new panel sizeaw
-            }
-    }
-    public void increasePanelWidth() {
-        if (isShrinking == false){
-            width += 10;
+        if (isShrinking == true){
+            height += 50;
+        }
+        else {
+            height += 5;
+        }
+
             gamePanel.setPreferredSize(new Dimension(width, height)); // Update panel size
+            if (collidUpWithShot){
+               // this.setBounds(getX(), getY() - 10, width, height);
+                this.setLocation(getX(),getY() -10);
+            }
+            else if (collidDownWithShot){
+               // this.setBounds(xFrame, getY() + 10, width, height);
+                this.setLocation(getX(),getY() + 10);
+            }
             gamePanel.revalidate(); // Revalidate the panel to ensure layout recalculation
             gamePanel.repaint(); // Repaint the panel
             System.out.println(width);
             pack(); // Resize the frame to fit the new panel sizeaw
-        }
+
     }
 
+    public void increasePanelWidth() {
+            if (isShrinking == true){
+                width += 50;
+            }
+            else {
+                width += 5;
+            }
 
+            gamePanel.setPreferredSize(new Dimension(width, height)); // Update panel size
 
+            if (collidRightWithShot){
+             //  this.setBounds(getX() + 5, yFrame, width, height);
+                this.setLocation(getX() + 5,getY());
+            }
+            else if (collidLeftWithShot){
+              //  this.setBounds(getX() - 10, yFrame, width, height);
+                this.setLocation(getX() - 10,getY());
+            }
+            gamePanel.revalidate(); // Revalidate the panel to ensure layout recalculation
+            gamePanel.repaint(); // Repaint the panel
+            System.out.println(width);
+            pack(); // Resize the frame to fit the new panel sizeaw
 
-
+    }
 
 
     @Override
@@ -135,17 +159,16 @@ public class GameFrame extends JFrame implements Runnable{
             }
 
 
-
             if (System.currentTimeMillis() - timer >= 1000) {
                 timer += 1000;
             }
         }
     }
 
-   public static void main(String[] args) {
-       new GameFrame();
+    public static void main(String[] args) {
+        new GameFrame();
 
-   }
+    }
 }
 
 
