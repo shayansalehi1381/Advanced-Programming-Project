@@ -26,7 +26,7 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
     boolean collidWithRight = false;
     boolean collidWithUp = false;
     boolean collidWithDown = false;
-
+    int HP = 100;
     public Epsilon(GameFrame gameFrame) {
 
         super();
@@ -35,8 +35,10 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
 
 
     public void paint(Graphics g) {
-        g.setColor(Color.red);
-        g.fillOval(xPos, yPos, width, height);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.RED); // Set color of the triangle's outline
+        g2d.setStroke(new BasicStroke(8));
+        g.drawOval(xPos, yPos, width, height);
 
         for (int i = 0; i < shots.size(); i++) {
             Shot shot = shots.get(i);

@@ -111,7 +111,7 @@ public class GameFrame extends JFrame implements Runnable {
             }
             gamePanel.revalidate(); // Revalidate the panel to ensure layout recalculation
             gamePanel.repaint(); // Repaint the panel
-            System.out.println(width);
+
             pack(); // Resize the frame to fit the new panel sizeaw
 
     }
@@ -142,7 +142,6 @@ public class GameFrame extends JFrame implements Runnable {
 
             gamePanel.revalidate(); // Revalidate the panel to ensure layout recalculation
             gamePanel.repaint(); // Repaint the panel
-            System.out.println(width);
             pack(); // Resize the frame to fit the new panel size
 
     }

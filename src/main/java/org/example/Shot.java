@@ -28,7 +28,7 @@ public class Shot extends Rectangle {
     }
 
     public void paint(Graphics g){
-        g.setColor(Color.yellow);
+        g.setColor(Color.MAGENTA);
         g.fillOval(xPos,yPos,width,height);
     }
     public void move() {
@@ -86,5 +86,22 @@ public class Shot extends Rectangle {
         }
 
     }
+
+
+
+    public void collidWithTriangle(TrigorathEnemy triangle) {
+
+        Polygon polygon = new Polygon(triangle.xPoints, triangle.yPoints, triangle.nPoints);
+
+        if (polygon.contains(xPos, yPos)) {
+            triangle.handleImpact(epsilon); // Call the method to handle the impact
+            triangle.HP -= 5;
+            if (triangle.HP <= 0){
+                GamePanel.triangles.remove(triangle);
+            }
+            epsilon.shots.remove(this);
+        }
+    }
+
 
 }
