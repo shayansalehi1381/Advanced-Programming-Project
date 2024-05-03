@@ -24,7 +24,7 @@ public class GameFrame extends JFrame implements Runnable {
     int newWidth;
     int newHeight;
     int timeDelay = 5000;
-    int firstDelay = 0;
+    int ShrinkageTime = 0;
     static boolean collidUpWithShot = false;
     static boolean collidDownWithShot = false;
     static boolean collidRightWithShot = false;
@@ -67,20 +67,24 @@ public class GameFrame extends JFrame implements Runnable {
             double progress = (double) (currentTime - startTime) / animationDurationMs;
 
             // Calculate new width and height based on progress and target size
+                if (ShrinkageTime >= 1 && width <= 200 && height <= 200) {
+                    width = 205;
+                    height = 205;
 
+                }
             newWidth = (int) (width + (targetWidth - width) * progress);
             newHeight = (int) (height + (targetHeight - height) * progress);
-           // width = newWidth;
-          //  height = newHeight;
-            // Set the new frame size
+
             this.setSize(newWidth, newHeight);
+
 
             // Check if target size is reached, break if so
             if (newWidth <= 200 && newHeight <= 200) {
                 width = newWidth;
                 height = newHeight;
                 isShrinking = false;
-
+                ShrinkageTime++;
+                break;
 
             }
 
@@ -98,11 +102,11 @@ public class GameFrame extends JFrame implements Runnable {
 
             gamePanel.setPreferredSize(new Dimension(width, height)); // Update panel size
             if (collidUpWithShot){
-               // this.setBounds(getX(), getY() - 10, width, height);
+
                 this.setLocation(getX(),getY() -10);
             }
             else if (collidDownWithShot){
-               // this.setBounds(xFrame, getY() + 10, width, height);
+
                 this.setLocation(getX(),getY() + 10);
             }
             gamePanel.revalidate(); // Revalidate the panel to ensure layout recalculation
@@ -115,25 +119,31 @@ public class GameFrame extends JFrame implements Runnable {
     public void increasePanelWidth() {
             if (isShrinking == true){
                 width += 50;
+
+                if (collidRightWithShot){
+                    this.setLocation(getX() + 10,getY());
+                }
+                else if (collidLeftWithShot){
+                    this.setLocation(getX() - 40,getY());
+                }
             }
             else {
                 width += 5;
+
+                if (collidRightWithShot){
+                    this.setLocation(getX() + 5,getY());
+                }
+                else if (collidLeftWithShot){
+                    this.setLocation(getX() - 10,getY());
+                }
             }
 
             gamePanel.setPreferredSize(new Dimension(width, height)); // Update panel size
 
-            if (collidRightWithShot){
-             //  this.setBounds(getX() + 5, yFrame, width, height);
-                this.setLocation(getX() + 5,getY());
-            }
-            else if (collidLeftWithShot){
-              //  this.setBounds(getX() - 10, yFrame, width, height);
-                this.setLocation(getX() - 10,getY());
-            }
             gamePanel.revalidate(); // Revalidate the panel to ensure layout recalculation
             gamePanel.repaint(); // Repaint the panel
             System.out.println(width);
-            pack(); // Resize the frame to fit the new panel sizeaw
+            pack(); // Resize the frame to fit the new panel size
 
     }
 
