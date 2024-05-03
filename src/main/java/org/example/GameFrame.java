@@ -22,6 +22,13 @@ public class GameFrame extends JFrame implements Runnable{
     double timeLeft;
     Thread gameThread;
     boolean isShrinking = false;
+    int newWidth;
+    int newHeight;
+
+    static boolean collidUpWithShot = false;
+    static boolean collidDownWithShot = false;
+    static boolean collidRightWithShot = false;
+    static boolean collidLeftWithShot = false;
 
     public GameFrame() {
 
@@ -55,14 +62,18 @@ public class GameFrame extends JFrame implements Runnable{
             double progress = (double) (currentTime - startTime) / animationDurationMs;
 
             // Calculate new width and height based on progress and target size
-            int newWidth = (int) (width + (targetWidth - width) * progress);
-            int newHeight = (int) (height + (targetHeight - height) * progress);
 
+             newWidth = (int) (700 + (targetWidth - 700) * progress);
+             newHeight = (int) (700 + (targetHeight - 700) * progress);
+             width = newWidth;
+             height = newHeight;
             // Set the new frame size
-            this.setSize(newWidth, newHeight);
+            this.setSize(width, height);
 
             // Check if target size is reached, break if so
             if (newWidth <= 200 && newHeight <= 200) {
+                width = newWidth;
+                height = newHeight;
                 isShrinking = false;
                 break;
 
@@ -74,6 +85,26 @@ public class GameFrame extends JFrame implements Runnable{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
+    public void increasePanelHeight() {
+            if (isShrinking == false){
+                height += 10;
+                gamePanel.setPreferredSize(new Dimension(width, height)); // Update panel size
+                gamePanel.revalidate(); // Revalidate the panel to ensure layout recalculation
+                gamePanel.repaint(); // Repaint the panel
+                System.out.println(width);
+                pack(); // Resize the frame to fit the new panel sizeaw
+            }
+    }
+    public void increasePanelWidth() {
+        if (isShrinking == false){
+            width += 10;
+            gamePanel.setPreferredSize(new Dimension(width, height)); // Update panel size
+            gamePanel.revalidate(); // Revalidate the panel to ensure layout recalculation
+            gamePanel.repaint(); // Repaint the panel
+            System.out.println(width);
+            pack(); // Resize the frame to fit the new panel sizeaw
         }
     }
 

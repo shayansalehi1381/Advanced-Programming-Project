@@ -4,9 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
-public class Epsilon extends Rectangle implements KeyListener {
+public class Epsilon extends Rectangle implements KeyListener , MouseListener {
     GameFrame gameFrame;
+    public ArrayList<Shot> shots = new ArrayList<>();
     int xPos = 300;
     int yPos = 300;
     int width = 30;
@@ -34,6 +38,10 @@ public class Epsilon extends Rectangle implements KeyListener {
         g.setColor(Color.red);
         g.fillOval(xPos,yPos,width,height);
 
+        for (int i = 0; i < shots.size(); i++) {
+            Shot shot = shots.get(i);
+            shot.paint(g);
+        }
     }
 
     public void move(){
@@ -45,6 +53,11 @@ public class Epsilon extends Rectangle implements KeyListener {
                 }
         xPos += xSpeed;
         yPos += ySpeed;
+
+        for (int i = 0; i < shots.size(); i++) {
+            Shot shot = shots.get(i);
+            shot.move();
+        }
     }
 
     @Override
@@ -187,10 +200,44 @@ public class Epsilon extends Rectangle implements KeyListener {
 
 
         }
+
+
+        //******************************************************************
+        //collision of Shots to the frame:
+        for (Shot shot:shots){
+            shot.checkCollisionWithFrame();
+        }
     }
 
 
-    public void shooting(){
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        Shot shot = new Shot(this);
+        shots.add(shot);
+        shot.targetX = e.getX();
+        shot.targetY = e.getY();
+        shot.setTarget(shot.targetX, shot.targetY);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
 
     }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
 }
