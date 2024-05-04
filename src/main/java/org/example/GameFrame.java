@@ -58,7 +58,7 @@ public class GameFrame extends JFrame implements Runnable {
 
     private void shrinkFrame() {
         isShrinking = true;
-        int animationDurationMs = 10000;
+        int animationDurationMs = 20000;
         long startTime = System.currentTimeMillis();
 
         while (true) {
@@ -68,8 +68,8 @@ public class GameFrame extends JFrame implements Runnable {
 
             // Calculate new width and height based on progress and target size
                 if (ShrinkageTime >= 1 && width <= 200 && height <= 200) {
-                    width = 205;
-                    height = 205;
+                    width = 220;
+                    height = 220;
 
                 }
             newWidth = (int) (width + (targetWidth - width) * progress);

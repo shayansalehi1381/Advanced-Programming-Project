@@ -27,6 +27,8 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
     boolean collidWithUp = false;
     boolean collidWithDown = false;
     int HP = 100;
+    int XP = 0;
+
     public Epsilon(GameFrame gameFrame) {
 
         super();
@@ -38,11 +40,10 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.RED); // Set color of the triangle's outline
         g2d.setStroke(new BasicStroke(8));
-        g.drawOval(xPos, yPos, width, height);
-
-        for (int i = 0; i < shots.size(); i++) {
-            Shot shot = shots.get(i);
-            shot.paint(g);
+            g.drawOval(xPos, yPos, width, height);
+            for (int i = 0; i < shots.size(); i++) {
+                Shot shot = shots.get(i);
+                shot.paint(g);
         }
     }
 
@@ -61,6 +62,51 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
             shot.move();
         }
     }
+
+
+    public void handleImpact(TrigorathEnemy triangle) {
+        double dx = xPos - triangle.xP2;
+        double dy = yPos - triangle.yP2;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance <= 50) { // Adjust the distance threshold as needed
+            double normalizedDX = dx / distance;
+            double normalizedDY = dy / distance;
+            double impactForce = 5; // Initial impact force
+            double deceleration = 0.1; // Deceleration rate
+
+            // Apply a force away from the triangle
+            xSpeed += normalizedDX * impactForce;
+            ySpeed += normalizedDY * impactForce;
+
+
+
+
+            // Gradually reduce the impact force to simulate deceleration
+           // impactForce -= deceleration;
+
+            // Ensure that impact force doesn't become negative
+            impactForce = Math.max(impactForce, 0);
+
+            // Update position
+            xPos += xSpeed;
+            yPos += ySpeed;
+
+            // Update the position of the Epsilon
+            this.setBounds(xPos, yPos, width, height);
+
+            // If impact force is below a certain threshold, stop movement
+            if (impactForce <= 0.1) {
+                xSpeed = 0;
+                ySpeed = 0;
+            }
+
+            // Print debug message
+            System.out.println("Impact");
+        }
+    }
+
+
 
     @Override
     public void keyTyped(KeyEvent e) {

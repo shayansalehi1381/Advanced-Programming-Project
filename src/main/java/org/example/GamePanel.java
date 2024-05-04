@@ -73,6 +73,9 @@ public class GamePanel extends JPanel  {
 
     public void checkCollisions(){
         epsilon.collisionToFrame();
+
+
+        //shots hit the frame
         for (int i = epsilon.shots.size() -1 ; i >= 0 ; i--) {
             Shot shot = epsilon.shots.get(i);
             {
@@ -90,11 +93,21 @@ public class GamePanel extends JPanel  {
                 }
 
             }
+
+
+            // shots hit the triangles
             for (int j = 0; j < triangles.size(); j++) {
                 TrigorathEnemy trigorathEnemy = triangles.get(j);
                shot.collidWithTriangle(trigorathEnemy);
             }
             break;
+        }
+
+
+        //triangles hit the epsilon
+        for (int i = 0; i < triangles.size(); i++) {
+            TrigorathEnemy trigorathEnemy = triangles.get(i);
+            trigorathEnemy.checkVerticesHitEpsilon(epsilon);
         }
     }
 

@@ -18,12 +18,14 @@ public class TrigorathEnemy extends Polygon {
     int yP3 = 400;
     int[] xPoints = new int[3];
     int[] yPoints = new int[3];
-
-
     int nPoints = 3; // Number of vertices
+    int knockbackForce = 15;
+
+
 
     public TrigorathEnemy(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
+
         generateRandomPointOutsideFrame(this.gameFrame);
         GamePanel.triangles.add(this);
     }
@@ -38,8 +40,6 @@ public class TrigorathEnemy extends Polygon {
             y = random.nextInt(1000 - 0) + 0;
         } while (x >= frame.xFrame && x <= frame.xFrame + frame.width &&
                 y >= frame.yFrame && y <= frame.yFrame + frame.height); // Repeat until the point is outside the frame
-
-
         xP1 = x;
         xP2 = x + 10;
         xP3 = x + 20;
@@ -72,8 +72,8 @@ public class TrigorathEnemy extends Polygon {
         int epsilonY = epsilon.yPos;
 
         // Calculate direction towards epsilon
-        int dx = epsilonX - xP2;
-        int dy = epsilonY - yP2;
+        int dx = epsilonX - (xP3 + xP1)/2 + 20;
+        int dy = epsilonY - (yP2+ yP1)/2 + 15;
 
         // Normalize the direction vector
         double magnitude = Math.sqrt(dx * dx + dy * dy);
@@ -108,6 +108,7 @@ public class TrigorathEnemy extends Polygon {
 
     }
 
+
     public void handleImpact(Epsilon epsilon) {
         // Move the triangle back temporarily
         int dx = xP2 - epsilon.xPos;
@@ -115,7 +116,9 @@ public class TrigorathEnemy extends Polygon {
         double magnitude = Math.sqrt(dx * dx + dy * dy);
         double normalizedDX = dx / magnitude;
         double normalizedDY = dy / magnitude;
-        int impactDistance = 25; // Adjust the impact distance as needed
+        int impactDistance = 50; // Adjust the impact distance as needed
+
+        //********************
         xP1 += normalizedDX * impactDistance;
         xP2 += normalizedDX * impactDistance;
         xP3 += normalizedDX * impactDistance;
@@ -127,13 +130,32 @@ public class TrigorathEnemy extends Polygon {
         xPoints[0] = xP1;
         xPoints[1] = xP2;
         xPoints[2] = xP3;
-        yPoints[0] = yP1;
+       yPoints[0] = yP1;
         yPoints[1] = yP2;
         yPoints[2] = yP3;
-
-
-
     }
+
+
+
+
+
+
+
+    public boolean checkVerticesHitEpsilon(Epsilon epsilon) {
+        for (int i = 0; i < nPoints; i++) {
+            double distance = Math.sqrt(Math.pow(xPoints[i] - epsilon.xPos, 2) + Math.pow(yPoints[i] - epsilon.yPos, 2));
+            // If the distance is less than epsilon, return true
+            if (distance < epsilon.width) {
+                epsilon.handleImpact(this);
+               // this.handleImpact(epsilon);
+                epsilon.HP -= 10;
+
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 
 }
