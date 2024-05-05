@@ -11,6 +11,7 @@ public class GamePanel extends JPanel  {
     GameFrame gameFrame;
     Epsilon epsilon;
     public static ArrayList<TrigorathEnemy> triangles;
+    public static ArrayList<SquareEnemy> squares;
 
 
     static int Wave = 1;
@@ -22,6 +23,7 @@ public class GamePanel extends JPanel  {
         setBounds(1000,0,getWidth(),getHeight());
         epsilon = new Epsilon(gameFrame);
         triangles = new ArrayList<>();
+        squares = new ArrayList<>();
         setBackground(Color.BLACK);
         setFocusable(true); // Make the panel focusable
       //  requestFocusInWindow(); // Request focus when the frame is initialized
@@ -33,9 +35,11 @@ public class GamePanel extends JPanel  {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (Wave == 1 && count < 1) {
+                if (Wave == 1 && count < 2) {
                     TrigorathEnemy triangle = new TrigorathEnemy(gameFrame);
                     triangles.add(triangle);
+                    SquareEnemy squareEnemy = new SquareEnemy(gameFrame);
+                    squares.add(squareEnemy);
                     count++;
                 } else {
                     // Stop the timer after creating the required number of triangles
@@ -60,12 +64,24 @@ public class GamePanel extends JPanel  {
             TrigorathEnemy trigorathEnemy = triangles.get(i);
             trigorathEnemy.paint(g);
         }
+        for (int i = 0; i < squares.size(); i++) {
+            SquareEnemy squareEnemy = squares.get(i);
+            squareEnemy.paint(g);
+        }
+
+
     }
 
     public void move(){
         epsilon.move();
         for (TrigorathEnemy trigorathEnemy:triangles){
             trigorathEnemy.moveTowardsEpsilon(epsilon);
+
+        }
+
+
+        for (SquareEnemy squareEnemy:squares){
+            squareEnemy.moveTowardsEpsilon(epsilon);
 
         }
     }
@@ -108,6 +124,13 @@ public class GamePanel extends JPanel  {
         for (int i = 0; i < triangles.size(); i++) {
             TrigorathEnemy trigorathEnemy = triangles.get(i);
             trigorathEnemy.checkVerticesHitEpsilon(epsilon);
+        }
+
+
+        //squares hit epsilon
+        for (int i = 0; i < squares.size(); i++) {
+            SquareEnemy squareEnemy = squares.get(i);
+            squareEnemy.checkVerticesHitEpsilon(epsilon);
         }
     }
 

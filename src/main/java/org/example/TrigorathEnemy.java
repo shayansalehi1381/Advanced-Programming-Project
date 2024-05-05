@@ -25,12 +25,17 @@ public class TrigorathEnemy extends Polygon {
 
     int lastSpeed;
 
+    boolean impactForImpact = false;
+    int ID;
+    static int nextID = 1;
+
 
     public TrigorathEnemy(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
 
         generateRandomPointOutsideFrame(this.gameFrame);
         GamePanel.triangles.add(this);
+        ID = nextID++;
     }
 
     public void generateRandomPointOutsideFrame(GameFrame frame) {

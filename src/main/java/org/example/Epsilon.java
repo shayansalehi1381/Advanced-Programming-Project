@@ -83,19 +83,50 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
         double dx = xPos - triangle.xP2;
         double dy = yPos - triangle.yP2;
         double distance = Math.sqrt(dx * dx + dy * dy);
+        double normalizedDX = dx / distance;
+        double normalizedDY = dy / distance;
+        double impactForce = 5;;
         if (distance <= 30) {
-            System.out.println("Impact");
+
             triangle.impactedWithEpsilon = true;
             this.impactTriangle = true;
 
-            double normalizedDX = dx / distance;
-            double normalizedDY = dy / distance;
-            double impactForce = 5;
+
+            if (triangle.impactedWithEpsilon == true){
+                for (int i = 0; i < GamePanel.triangles.size(); i++) {
+                    TrigorathEnemy trigorathEnemy = GamePanel.triangles.get(i);
+                    if (trigorathEnemy != triangle){
+
+                        //  System.out.println("hi");
+                        trigorathEnemy.impactedWithEpsilon = true;
+
+                        trigorathEnemy.speed *= -1;
+                        System.out.println("ID:"+trigorathEnemy.ID + trigorathEnemy.speed);
+                        trigorathEnemy.lastSpeed = trigorathEnemy.speed;
+
+                        Timer timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+
+                                triangle.impactedWithEpsilon = false;
+                                impactTriangle = false;
+                            }
+                        }, 100);
+
+
+
+                    }
+                }
+            }
+
+
 
             // Apply a force away from the triangle
             xSpeed += normalizedDX * impactForce;
             ySpeed += normalizedDY * impactForce;
-            triangle.speed *= -2;
+            triangle.speed *= -4;
+            System.out.println(triangle.speed);
             triangle.lastSpeed = triangle.speed;
             // Update position
             xPos += xSpeed;
@@ -110,12 +141,14 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
 
                     triangle.impactedWithEpsilon = false;
                     impactTriangle = false;
-                    System.out.println("Impact flags reset");
+
                 }
             }, 300);
 
 
         }
+
+
     }
 
 
