@@ -1,10 +1,9 @@
 package org.example;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.TimerTask;
+import java.io.File;
 import java.util.*;
 
 public class GamePanel extends JPanel  {
@@ -17,6 +16,8 @@ public class GamePanel extends JPanel  {
     public static int creation = 0;
 
     public static boolean winTheGame= false;
+
+    Sound sound = new Sound();
 
 
     static int Wave = 1;
@@ -37,6 +38,7 @@ public class GamePanel extends JPanel  {
         this.addKeyListener(new AL());
         this.addMouseListener(new ML());
         new Wave(gameFrame);
+        playMusic(sound.themeSong);
     }
 
 
@@ -95,8 +97,23 @@ public class GamePanel extends JPanel  {
             Collectable collectable = collectables.get(i);
             collectable.paint(g);
         }
+    }
 
 
+    public void playMusic(File file){
+        sound.setFile(file);
+        sound.play();
+        sound.loop();
+    }
+
+    public void stopMusic(){
+        sound.stop();
+    }
+
+
+    public void playSE(File file){
+        sound.setFile(file);
+        sound.play();
     }
 
     public void move(){
