@@ -7,6 +7,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.TimerTask;
+import java.util.Timer;
 
 public class Epsilon extends Rectangle implements KeyListener, MouseListener {
     GameFrame gameFrame;
@@ -28,6 +30,11 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
     boolean collidWithDown = false;
     int HP = 100;
     int XP = 0;
+
+    boolean impactTriangle = false;
+
+    private final int acceleration = 1;
+    private final int deceleration = 1;
 
     public Epsilon(GameFrame gameFrame) {
 
@@ -54,6 +61,14 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
         if (collidWithUp == true || collidWithDown == true) {
             ySpeed = 0;
         }
+
+        if (impactTriangle == false){
+            if (W_Key == false && S_Key == false && D_Key == false && A_Key == false){
+                xSpeed = 0;
+                ySpeed = 0;
+            }
+
+        }
         xPos += xSpeed;
         yPos += ySpeed;
 
@@ -68,41 +83,38 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
         double dx = xPos - triangle.xP2;
         double dy = yPos - triangle.yP2;
         double distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance <= 30) {
+            System.out.println("Impact");
+            triangle.impactedWithEpsilon = true;
+            this.impactTriangle = true;
 
-        if (distance <= 50) { // Adjust the distance threshold as needed
             double normalizedDX = dx / distance;
             double normalizedDY = dy / distance;
-            double impactForce = 5; // Initial impact force
-            double deceleration = 0.1; // Deceleration rate
+            double impactForce = 5;
 
             // Apply a force away from the triangle
             xSpeed += normalizedDX * impactForce;
             ySpeed += normalizedDY * impactForce;
-
-
-
-
-            // Gradually reduce the impact force to simulate deceleration
-           // impactForce -= deceleration;
-
-            // Ensure that impact force doesn't become negative
-            impactForce = Math.max(impactForce, 0);
-
+            triangle.speed *= -2;
+            triangle.lastSpeed = triangle.speed;
             // Update position
             xPos += xSpeed;
             yPos += ySpeed;
 
-            // Update the position of the Epsilon
             this.setBounds(xPos, yPos, width, height);
 
-            // If impact force is below a certain threshold, stop movement
-            if (impactForce <= 0.1) {
-                xSpeed = 0;
-                ySpeed = 0;
-            }
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
 
-            // Print debug message
-            System.out.println("Impact");
+                    triangle.impactedWithEpsilon = false;
+                    impactTriangle = false;
+                    System.out.println("Impact flags reset");
+                }
+            }, 300);
+
+
         }
     }
 
@@ -125,7 +137,7 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
                 setDirectionY(0);
                 move();
             } else
-                setDirectionY(-3);
+                setDirectionY(-acceleration);
             move();
         }
 
@@ -165,7 +177,7 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
                 setDirectionX(0);
                 move();
             } else
-                setDirectionX(-3);
+                setDirectionX(-acceleration);
             move();
         }
     }
@@ -195,12 +207,59 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
     }
 
     public void setDirectionX(int number) {
-        xSpeed = number;
+        if (number == 0) {
+            // Decelerate
+            while (xSpeed != 0){
+                if (xSpeed > 0) {
+                    xSpeed -= deceleration;
+                } else if (xSpeed < 0) {
+                    xSpeed += deceleration;
+                }
+
+            }
+
+        } else {
+            xSpeed += number;
+            // Limit maximum speed
+            if (xSpeed > 3) {
+                xSpeed = 3;
+            } else if (xSpeed < -3) {
+                xSpeed = -3;
+            }
+            // Limit minimum speed
+            if (Math.abs(xSpeed) < 2) {
+                xSpeed = (xSpeed > 0) ? 2 : -2;
+            }
+        }
     }
 
     public void setDirectionY(int number) {
-        ySpeed = number;
+        if (number == 0) {
+            // Decelerate
+
+            while (ySpeed != 0){
+                if (ySpeed > 0) {
+                    ySpeed -= deceleration;
+                } else if (ySpeed < 0) {
+                    ySpeed += deceleration;
+                }
+            }
+
+        } else {
+            ySpeed += number;
+            // Limit maximum speed
+            if (ySpeed > 3) {
+                ySpeed = 3;
+            } else if (ySpeed < -3) {
+                ySpeed = -3;
+            }
+            // Limit minimum speed
+            if (Math.abs(ySpeed) < 2) {
+                ySpeed = (ySpeed > 0) ? 2 : -2;
+            }
+        }
     }
+
 
 
     public void collisionToFrame() {

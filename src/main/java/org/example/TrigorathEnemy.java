@@ -10,17 +10,20 @@ public class TrigorathEnemy extends Polygon {
 
     int HP = 15;
 
-    int xP1 = 400;
-    int xP2 = 410;
-    int xP3 = 420;
-    int yP1 = 400;
-    int yP2 = 380;
-    int yP3 = 400;
+    int xP1 ;
+    int xP2 ;
+    int xP3 ;
+    int yP1 ;
+    int yP2 ;
+    int yP3 ;
     int[] xPoints = new int[3];
     int[] yPoints = new int[3];
     int nPoints = 3; // Number of vertices
-    int knockbackForce = 15;
+    int speed;
 
+    boolean impactedWithEpsilon = false;
+
+    int lastSpeed;
 
 
     public TrigorathEnemy(GameFrame gameFrame) {
@@ -38,8 +41,8 @@ public class TrigorathEnemy extends Polygon {
         do {
             x = random.nextInt(2000 - 0) + 0; // Generate a random x coordinate within the range
             y = random.nextInt(1000 - 0) + 0;
-        } while (x >= frame.xFrame && x <= frame.xFrame + frame.width &&
-                y >= frame.yFrame && y <= frame.yFrame + frame.height); // Repeat until the point is outside the frame
+        } while (x >= frame.getX() && x <= frame.getX() + frame.getWidth() &&
+                y >= frame.getY() && y <= frame.getY() + frame.getHeight()); // Repeat until the point is outside the frame
         xP1 = x;
         xP2 = x + 10;
         xP3 = x + 20;
@@ -60,7 +63,7 @@ public class TrigorathEnemy extends Polygon {
 
         // Draw the triangle outline
         g2d.setColor(Color.yellow); // Set color of the triangle's outline
-        g2d.setStroke(new BasicStroke(4)); // Set the width of the outline
+        g2d.setStroke(new BasicStroke(3)); // Set the width of the outline
         g2d.drawPolygon(xPoints,yPoints,nPoints);
     }
 
@@ -72,24 +75,31 @@ public class TrigorathEnemy extends Polygon {
         int epsilonY = epsilon.yPos;
 
         // Calculate direction towards epsilon
-        int dx = epsilonX - (xP3 + xP1)/2 + 20;
-        int dy = epsilonY - (yP2+ yP1)/2 + 15;
+        int dx = epsilonX - ((xP1+xP3)/2);
+        int dy = epsilonY - ((yP2 + yP1)/2);
 
         // Normalize the direction vector
         double magnitude = Math.sqrt(dx * dx + dy * dy);
         if (magnitude < 2) { // Adjust the threshold as needed
+
             return;
         }
         double normalizedDX = dx / magnitude;
         double normalizedDY = dy / magnitude;
 
-            int speed;
-            if (magnitude >= 150){
-                speed = 3;
+        if (!impactedWithEpsilon) {
+            int acceleration = 1;
+            int deceleration = 1;
+            if (magnitude >= 150) {
+                // Accelerate to maximum speed of 3
+                speed = Math.min(speed + acceleration, 3);
+            } else {
+                // Decelerate with a minimum speed of 1
+                speed = Math.max(speed - deceleration, 1);
             }
-            else {
-                speed = 1;
-            }
+        }
+
+
         xP1 += normalizedDX * speed;
         xP2 += normalizedDX * speed;
         xP3 += normalizedDX * speed;
@@ -147,7 +157,6 @@ public class TrigorathEnemy extends Polygon {
             // If the distance is less than epsilon, return true
             if (distance < epsilon.width) {
                 epsilon.handleImpact(this);
-               // this.handleImpact(epsilon);
                 epsilon.HP -= 10;
 
                 return true;
@@ -155,6 +164,9 @@ public class TrigorathEnemy extends Polygon {
         }
         return false;
     }
+
+
+
 
 
 
