@@ -29,6 +29,9 @@ public class TrigorathEnemy extends Polygon {
     int ID;
     static int nextID = 1;
 
+    int xDeath;
+    int yDeath;
+
 
     public TrigorathEnemy(GameFrame gameFrame) {
         this.gameFrame = gameFrame;

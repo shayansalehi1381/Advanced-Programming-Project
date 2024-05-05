@@ -1,5 +1,7 @@
 package org.example;
 
+import com.sun.jna.platform.mac.SystemB;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -97,7 +99,30 @@ public class Shot extends Rectangle {
             triangle.handleImpact(epsilon); // Call the method to handle the impact
             triangle.HP -= 5;
             if (triangle.HP <= 0){
-                GamePanel.triangles.remove(triangle);
+                triangle.xDeath = triangle.xP2;
+                triangle.yDeath = triangle.yP2;
+                new Collectable(triangle);
+                new Collectable(triangle);
+                        GamePanel.triangles.remove(triangle);
+            }
+            epsilon.shots.remove(this);
+        }
+    }
+
+
+
+
+
+    public void collidWithSquare(SquareEnemy squareEnemy){
+        Rectangle bullet = new Rectangle(xPos,yPos,width,height);
+        Rectangle squareRect = new Rectangle(squareEnemy.xPos,squareEnemy.yPos,squareEnemy.width,squareEnemy.height);
+        if (bullet.intersects(squareRect)){
+            squareEnemy.HP -= 5;
+            if (squareEnemy.HP <= 0){
+                squareEnemy.xDeath = squareEnemy.xPos;
+                squareEnemy.yDeath = squareEnemy.yPos;
+                new Collectable(squareEnemy);
+                GamePanel.squares.remove(squareEnemy);
             }
             epsilon.shots.remove(this);
         }

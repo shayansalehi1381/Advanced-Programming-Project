@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class SquareEnemy extends Rectangle {
     GameFrame gameFrame;
-    int HP = 10;
+    public int HP = 10;
     int speed = 2;
     int xPos;
     int yPos;
@@ -15,6 +15,8 @@ public class SquareEnemy extends Rectangle {
     int ID;
     static int nextID = 1;
     boolean impactedWithEpsilon = false;
+    int xDeath;
+    int yDeath;
 
 
     public SquareEnemy(GameFrame gameFrame){

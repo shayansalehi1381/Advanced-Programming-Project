@@ -343,6 +343,15 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
         }
     }
 
+    public void collidWithCollectable(Collectable collectable){
+        Rectangle epsilonRect = new Rectangle(xPos,yPos,width,height);
+        Rectangle collectRect = new Rectangle(collectable.xPos,collectable.yPos,collectable.width,collectable.height);
+        if (epsilonRect.intersects(collectRect)){
+            this.XP+=5;
+                GamePanel.collectables.remove(collectable);
+        }
+    }
+
 
     @Override
     public void mouseClicked(MouseEvent e) {

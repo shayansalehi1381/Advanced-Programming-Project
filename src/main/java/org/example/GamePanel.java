@@ -13,6 +13,7 @@ public class GamePanel extends JPanel  {
     public static ArrayList<TrigorathEnemy> triangles;
     public static ArrayList<SquareEnemy> squares;
     public static ArrayList<Object> allEnemies;
+    public static ArrayList<Collectable> collectables;
     public static int creation = 0;
 
     public static boolean winTheGame= false;
@@ -29,6 +30,7 @@ public class GamePanel extends JPanel  {
         triangles = new ArrayList<>();
         squares = new ArrayList<>();
         allEnemies = new ArrayList<>();
+        collectables = new ArrayList<>();
         setBackground(Color.BLACK);
         setFocusable(true); // Make the panel focusable
       //  requestFocusInWindow(); // Request focus when the frame is initialized
@@ -43,8 +45,7 @@ public class GamePanel extends JPanel  {
             if (Wave == 1) {
                 if (triangles.isEmpty()) {
                     if (squares.isEmpty()) {
-
-
+                        System.out.println("Wave 1 passed!");
                         Wave = 2;
                         creation++;
                         new Wave(gameFrame);
@@ -55,7 +56,7 @@ public class GamePanel extends JPanel  {
          if (Wave == 2){
              if (triangles.isEmpty()){
                  if (squares.isEmpty()){
-
+                     System.out.println("Wave 2 passed!");
                      Wave = 3;
                      new Wave(gameFrame);
                  }
@@ -88,6 +89,11 @@ public class GamePanel extends JPanel  {
         for (int i = 0; i < squares.size(); i++) {
             SquareEnemy squareEnemy = squares.get(i);
             squareEnemy.paint(g);
+        }//*********************************************
+
+        for (int i = 0; i < collectables.size(); i++) {
+            Collectable collectable = collectables.get(i);
+            collectable.paint(g);
         }
 
 
@@ -104,6 +110,14 @@ public class GamePanel extends JPanel  {
         for (SquareEnemy squareEnemy:squares){
             squareEnemy.moveTowardsEpsilon(epsilon);
 
+        }
+
+        //***************************
+        //coolectable moving
+
+        for (int i = 0; i < collectables.size(); i++) {
+            Collectable collectable = collectables.get(i);
+            collectable.move();
         }
     }
 
@@ -137,6 +151,15 @@ public class GamePanel extends JPanel  {
                 TrigorathEnemy trigorathEnemy = triangles.get(j);
                shot.collidWithTriangle(trigorathEnemy);
             }
+
+
+
+            // shots hit the squares
+            for (int j = 0; j < squares.size(); j++) {
+                SquareEnemy squareEnemy = squares.get(j);
+                shot.collidWithSquare(squareEnemy);
+            }
+
             break;
         }
 
@@ -152,6 +175,13 @@ public class GamePanel extends JPanel  {
         for (int i = 0; i < squares.size(); i++) {
             SquareEnemy squareEnemy = squares.get(i);
             squareEnemy.checkVerticesHitEpsilon(epsilon);
+        }
+
+
+        //epsilon hits the Collectables
+        for (int i = 0; i < collectables.size(); i++) {
+            Collectable collectable = collectables.get(i);
+            epsilon.collidWithCollectable(collectable);
         }
     }
 
