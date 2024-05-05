@@ -161,6 +161,7 @@ public class GameFrame extends JFrame implements Runnable {
 
             while (delta >= 1) {
                 gamePanel.checkCollisions();
+                gamePanel.checkWave();
                 gamePanel.move();
                 gamePanel.repaint();
 

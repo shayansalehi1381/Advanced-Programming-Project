@@ -125,7 +125,7 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
             // Apply a force away from the triangle
             xSpeed += normalizedDX * impactForce;
             ySpeed += normalizedDY * impactForce;
-            triangle.speed *= -4;
+            triangle.speed *= -1;
             System.out.println(triangle.speed);
             triangle.lastSpeed = triangle.speed;
             // Update position

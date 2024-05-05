@@ -35,6 +35,8 @@ public class TrigorathEnemy extends Polygon {
 
         generateRandomPointOutsideFrame(this.gameFrame);
         GamePanel.triangles.add(this);
+        GamePanel.allEnemies.add(this);
+        GamePanel.creation++;
         ID = nextID++;
     }
 

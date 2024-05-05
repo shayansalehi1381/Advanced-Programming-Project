@@ -12,6 +12,10 @@ public class GamePanel extends JPanel  {
     Epsilon epsilon;
     public static ArrayList<TrigorathEnemy> triangles;
     public static ArrayList<SquareEnemy> squares;
+    public static ArrayList<Object> allEnemies;
+    public static int creation = 0;
+
+    public static boolean winTheGame= false;
 
 
     static int Wave = 1;
@@ -24,33 +28,50 @@ public class GamePanel extends JPanel  {
         epsilon = new Epsilon(gameFrame);
         triangles = new ArrayList<>();
         squares = new ArrayList<>();
+        allEnemies = new ArrayList<>();
         setBackground(Color.BLACK);
         setFocusable(true); // Make the panel focusable
       //  requestFocusInWindow(); // Request focus when the frame is initialized
         this.addKeyListener(new AL());
         this.addMouseListener(new ML());
-        // Schedule the creation of triangles with a delay
-        Timer timer = new Timer(2000, new ActionListener() {
-            private int count = 0; // Counter to track the number of triangles created
+        new Wave(gameFrame);
+    }
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (Wave == 1 && count < 2) {
-                    TrigorathEnemy triangle = new TrigorathEnemy(gameFrame);
-                    triangles.add(triangle);
-                    SquareEnemy squareEnemy = new SquareEnemy(gameFrame);
-                    squares.add(squareEnemy);
-                    count++;
-                } else {
-                    // Stop the timer after creating the required number of triangles
-                    ((Timer) e.getSource()).stop();
+
+    public void checkWave() {
+        if (creation >= 1){
+            if (Wave == 1) {
+                if (triangles.isEmpty()) {
+                    if (squares.isEmpty()) {
+
+
+                        Wave = 2;
+                        creation++;
+                        new Wave(gameFrame);
+                    }
                 }
             }
-        });
-        timer.setInitialDelay(2000); // Initial delay before the first triangle creation
-        timer.start(); // Start the timer
-
     }
+         if (Wave == 2){
+             if (triangles.isEmpty()){
+                 if (squares.isEmpty()){
+
+                     Wave = 3;
+                     new Wave(gameFrame);
+                 }
+             }
+         }
+
+
+            if (Wave == 3){
+                if (triangles.isEmpty()){
+                    if (squares.isEmpty()){
+                       winTheGame = true;
+                    }
+                }
+            }
+        }
+
 
 
 

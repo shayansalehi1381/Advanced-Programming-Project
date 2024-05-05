@@ -16,19 +16,13 @@ public class SquareEnemy extends Rectangle {
     static int nextID = 1;
     boolean impactedWithEpsilon = false;
 
-    int topLeftX = xPos;
-    int topLeftY = yPos;
-    int topRightX = xPos + width;
-    int topRightY = yPos;
-    int bottomLeftX = xPos;
-    int bottomLeftY = yPos + height;
-    int bottomRightX = xPos + width;
-    int bottomRightY = yPos + height;
 
     public SquareEnemy(GameFrame gameFrame){
         this.gameFrame = gameFrame;
         GamePanel.squares.add(this);
+        GamePanel.allEnemies.add(this);
         generateRandomPointOutsideFrame(this.gameFrame);
+        GamePanel.creation++;
         ID = nextID++;
     }
 
