@@ -122,6 +122,9 @@ public class GamePanel extends JPanel  {
     }
 
 
+
+
+
     public void checkCollisions(){
         epsilon.collisionToFrame();
 

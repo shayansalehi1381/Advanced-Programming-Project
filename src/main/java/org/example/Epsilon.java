@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.TimerTask;
 import java.util.Timer;
 
@@ -344,13 +345,25 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
     }
 
     public void collidWithCollectable(Collectable collectable){
-        Rectangle epsilonRect = new Rectangle(xPos,yPos,width,height);
-        Rectangle collectRect = new Rectangle(collectable.xPos,collectable.yPos,collectable.width,collectable.height);
-        if (epsilonRect.intersects(collectRect)){
-            this.XP+=5;
-                GamePanel.collectables.remove(collectable);
+        Rectangle epsilonRect = new Rectangle(xPos, yPos, width, height);
+        Rectangle collectRect = new Rectangle(collectable.xPos, collectable.yPos, collectable.width, collectable.height);
+
+        if (epsilonRect.intersects(collectRect)) {
+            this.XP += 5;
+            collectable.catchedByEpsilon = true;
+
+            // Use iterator to remove the collectable
+            Iterator<Collectable> iterator = GamePanel.collectables.iterator();
+            while (iterator.hasNext()) {
+                Collectable nextCollectable = iterator.next();
+                if (nextCollectable == collectable) {
+                    iterator.remove();
+                    break; // Stop the loop once the collectable is removed
+                }
+            }
         }
     }
+
 
 
     @Override
