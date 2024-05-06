@@ -49,7 +49,11 @@ public class GameFrame extends JFrame implements Runnable {
             public void run() {
                 while (true){
                     shrinkFrame();
-
+                    if (width <= 0 && height <= 0){
+                        GamePanel.gameOver = true;
+                        System.out.println("game finished");
+                        break;
+                    }
                 }
 
             }
@@ -65,21 +69,32 @@ public class GameFrame extends JFrame implements Runnable {
             long currentTime = System.currentTimeMillis();
 
             double progress = (double) (currentTime - startTime) / animationDurationMs;
-
-            // Calculate new width and height based on progress and target size
-                if (ShrinkageTime >= 1 && width <= 200 && height <= 200) {
-                    width = 220;
-                    height = 220;
+                int target ;
+                if (!GamePanel.winTheGame){
+                    target = 200;
 
                 }
-            newWidth = (int) (width + (targetWidth - width) * progress);
-            newHeight = (int) (height + (targetHeight - height) * progress);
+                else {
+                    target = 0;
+                }
+            // Calculate new width and height based on progress and target size
+                if (ShrinkageTime >= 1 && width <= target && height <= target) {
+                    if (!GamePanel.winTheGame){
+                        width = 220;
+                        height = 220;
+                    }
+
+
+
+                }
+            newWidth = (int) (width + (target - width) * progress);
+            newHeight = (int) (height + (target - height) * progress);
 
             this.setSize(newWidth, newHeight);
 
 
             // Check if target size is reached, break if so
-            if (newWidth <= 200 && newHeight <= 200) {
+            if (newWidth <= target && newHeight <= target) {
                 width = newWidth;
                 height = newHeight;
                 isShrinking = false;
@@ -162,8 +177,9 @@ public class GameFrame extends JFrame implements Runnable {
             while (delta >= 1) {
                 gamePanel.checkCollisions();
                 gamePanel.checkWave();
-                gamePanel.checkGameState();
+                gamePanel.checkGameOver();
                 gamePanel.move();
+
                 gamePanel.repaint();
 
                 delta--;

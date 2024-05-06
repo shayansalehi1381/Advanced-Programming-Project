@@ -111,12 +111,15 @@ public class TrigorathEnemy extends Polygon {
         double normalizedDY = dy / magnitude;
 
         if (!impactedWithEpsilon) {
-            if (magnitude >= 10) {
-                speed =  2;
+            if (magnitude < 60) {
+                speed =  1;
+
             } else {
-                speed = 1;
+                speed = 3;
             }
         }
+
+
 
 
         xP1 += normalizedDX * speed;

@@ -26,6 +26,7 @@ public class GamePanel extends JPanel implements KeyListener{
     public static boolean gameOver = false;
     public static long numberOfGameOver;
     boolean showInfo = false;
+    long startTime;
     public GamePanel(GameFrame frame){
         super();
         gameFrame = frame;
@@ -46,7 +47,7 @@ public class GamePanel extends JPanel implements KeyListener{
         this.addMouseListener(new ML());
         new Wave(gameFrame);
         playMusic(sound.themeSong);
-
+        startTime = System.currentTimeMillis();
 
     }
 
@@ -86,7 +87,7 @@ public class GamePanel extends JPanel implements KeyListener{
             }
         }
 
-        public void checkGameState(){
+        public void checkGameOver(){
         if (gameOver){
 
             if (numberOfGameOver == 1){
@@ -95,6 +96,34 @@ public class GamePanel extends JPanel implements KeyListener{
             }
         }
         }
+
+    public void winTheGame() {
+        if (winTheGame) {
+            int epsilonFinalWidth = 10000; // Final width and height for Epsilon
+
+            Timer timer = new Timer();
+
+                int currentWidth = epsilon.width; // Initial width of Epsilon
+                int step = 2; // Step size for each iteration
+
+
+                    if (currentWidth < epsilonFinalWidth ) {
+                        // Increase the size of Epsilon
+                        currentWidth += step;
+                        epsilon.width = currentWidth;
+                        epsilon.height = currentWidth;
+                        epsilon.xPos += step;
+                        epsilon.yPos += step;
+                        repaint();
+                    } else {
+                        // Stop the timer when Epsilon reaches the final size
+                        timer.cancel();
+                    }
+
+             // Run the timer task every 50 milliseconds
+        }
+    }
+
 
 
 
@@ -134,9 +163,13 @@ public class GamePanel extends JPanel implements KeyListener{
             g.drawString("HP: "+epsilon.HP,gameFrame.gamePanel.getX()+10 ,gameFrame.gamePanel.getY()+gameFrame.gamePanel.getHeight()-20);
 
             g.setFont(new Font("Arial",Font.PLAIN,10));
-            g.drawString("Time Eplased: "+Wave,gameFrame.gamePanel.getX()+gameFrame.gamePanel.getWidth()-100 ,gameFrame.gamePanel.getY()+gameFrame.gamePanel.getHeight()-20);
+            g.drawString("Time Eplased: "+getElapsedTime(),gameFrame.gamePanel.getX()+gameFrame.gamePanel.getWidth()-100 ,gameFrame.gamePanel.getY()+gameFrame.gamePanel.getHeight()-20);
 
         }
+    }
+
+    public long getElapsedTime() {
+        return (System.currentTimeMillis() - startTime)/1000; // Calculate the elapsed time since the game started
     }
 
 
@@ -184,8 +217,7 @@ public class GamePanel extends JPanel implements KeyListener{
 
     public void checkCollisions(){
         epsilon.collisionToFrame();
-
-
+        winTheGame();
         //shots hit the frame
         for (int i = epsilon.shots.size() -1 ; i >= 0 ; i--) {
             Shot shot = epsilon.shots.get(i);

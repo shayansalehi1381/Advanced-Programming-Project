@@ -53,7 +53,7 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setColor(Color.RED); // Set color of the triangle's outline
             g2d.setStroke(new BasicStroke(8));
-            g.drawOval(xPos, yPos, width, height);
+            g.fillOval(xPos, yPos, width, height);
             for (int i = 0; i < shots.size(); i++) {
                 Shot shot = shots.get(i);
                 shot.paint(g);
@@ -247,56 +247,84 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_W) {
             W_Key = true;
-            if (collidWithDown == true) {
-                collidWithDown = false;
-            }
-            if (S_Key == true) {
+            if (GamePanel.winTheGame){
+                setDirectionX(0);
                 setDirectionY(0);
+            }
+            else {
+                if (collidWithDown == true) {
+                    collidWithDown = false;
+                }
+                if (S_Key == true) {
+                    setDirectionY(0);
+                    move();
+                } else
+                    setDirectionY(-acceleration);
                 move();
-            } else
-                setDirectionY(-acceleration);
-            move();
+            }
         }
 
         if (e.getKeyCode() == KeyEvent.VK_S) {
             S_Key = true;
-            if (collidWithUp == true) {
-                collidWithUp = false;
+            if (GamePanel.winTheGame){
+                setDirectionX(0);
+                setDirectionY(0);
+            }
+            else {
+                if (collidWithUp == true) {
+                    collidWithUp = false;
+                }
+
+                if (W_Key == true) {
+                    setDirectionY(0);
+                    move();
+                } else
+                    setDirectionY(3);
+                move();
             }
 
-            if (W_Key == true) {
-                setDirectionY(0);
-                move();
-            } else
-                setDirectionY(3);
-            move();
         }
         //*****************************************************************
         if (e.getKeyCode() == KeyEvent.VK_D) {
             D_Key = true;
-            if (collidWithLeft == true) {
-                collidWithLeft = false;
-            }
-            if (A_Key == true) {
+            if (GamePanel.winTheGame){
                 setDirectionX(0);
+                setDirectionY(0);
+            }
+            else {
+                if (collidWithLeft == true) {
+                    collidWithLeft = false;
+                }
+                if (A_Key == true) {
+                    setDirectionX(0);
+                    move();
+                } else
+                    setDirectionX(3);
                 move();
-            } else
-                setDirectionX(3);
-            move();
+            }
+
         }
 
         if (e.getKeyCode() == KeyEvent.VK_A) {
             A_Key = true;
-            if (collidWithRight == true) {
-                collidWithRight = false;
-            }
-            if (D_Key == true) {
+
+            if (GamePanel.winTheGame){
                 setDirectionX(0);
+                setDirectionY(0);
+            }
+            else {
+                if (collidWithRight == true) {
+                    collidWithRight = false;
+                }
+                if (D_Key == true) {
+                    setDirectionX(0);
+                    move();
+                } else
+                    setDirectionX(-acceleration);
                 move();
-            } else
-                setDirectionX(-acceleration);
-            move();
-        }
+            }
+            }
+
     }
 
     @Override
