@@ -182,7 +182,12 @@ public class TrigorathEnemy extends Polygon {
             if (distance < epsilon.width) {
                 epsilon.handleImpact(this);
                 epsilon.HP -= 10;
-                System.out.println(epsilon.HP);
+                if (!epsilon.dead){
+                    gameFrame.gamePanel.playSE(gameFrame.gamePanel.sound.damageSE);
+                }
+                if (epsilon.HP <= 0){
+                    epsilon.dead = true;
+                }
                 return true;
             }
         }

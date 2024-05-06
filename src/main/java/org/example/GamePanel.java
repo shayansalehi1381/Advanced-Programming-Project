@@ -5,10 +5,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.*;
+import java.util.Timer;
 
-public class GamePanel extends JPanel  {
+public class GamePanel extends JPanel implements KeyListener{
     GameFrame gameFrame;
     Epsilon epsilon;
+
     public static ArrayList<TrigorathEnemy> triangles;
     public static ArrayList<SquareEnemy> squares;
     public static ArrayList<Object> allEnemies;
@@ -21,6 +23,9 @@ public class GamePanel extends JPanel  {
 
 
     static int Wave = 1;
+    public static boolean gameOver = false;
+    public static long numberOfGameOver;
+    boolean showInfo = false;
     public GamePanel(GameFrame frame){
         super();
         gameFrame = frame;
@@ -35,10 +40,14 @@ public class GamePanel extends JPanel  {
         setBackground(Color.BLACK);
         setFocusable(true); // Make the panel focusable
       //  requestFocusInWindow(); // Request focus when the frame is initialized
+        this.setLayout(new BorderLayout());
         this.addKeyListener(new AL());
+        this.addKeyListener(this);
         this.addMouseListener(new ML());
         new Wave(gameFrame);
         playMusic(sound.themeSong);
+
+
     }
 
 
@@ -77,6 +86,16 @@ public class GamePanel extends JPanel  {
             }
         }
 
+        public void checkGameState(){
+        if (gameOver){
+
+            if (numberOfGameOver == 1){
+                playSE(sound.gameOverSE);
+                System.out.println("game over");
+            }
+        }
+        }
+
 
 
 
@@ -98,6 +117,25 @@ public class GamePanel extends JPanel  {
         for (int i = 0; i < collectables.size(); i++) {
             Collectable collectable = collectables.get(i);
             collectable.paint(g);
+        }
+
+
+        //draw information in the corners:
+      paintInformation(g);
+    }
+
+    public void paintInformation(Graphics g){
+        if (showInfo){
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial",Font.PLAIN,20));
+            g.drawString("Wave: "+Wave,gameFrame.gamePanel.getX()+10 ,gameFrame.gamePanel.getY()+20);
+            g.drawString("XP: "+epsilon.XP,gameFrame.gamePanel.getX()+gameFrame.gamePanel.getWidth()-70 ,gameFrame.gamePanel.getY()+20);
+
+            g.drawString("HP: "+epsilon.HP,gameFrame.gamePanel.getX()+10 ,gameFrame.gamePanel.getY()+gameFrame.gamePanel.getHeight()-20);
+
+            g.setFont(new Font("Arial",Font.PLAIN,10));
+            g.drawString("Time Eplased: "+Wave,gameFrame.gamePanel.getX()+gameFrame.gamePanel.getWidth()-100 ,gameFrame.gamePanel.getY()+gameFrame.gamePanel.getHeight()-20);
+
         }
     }
 
@@ -207,11 +245,43 @@ public class GamePanel extends JPanel  {
         }
     }
 
+    @Override
+    public void keyTyped(KeyEvent e) {
+        if (e.getKeyChar() == 'i' || e.getKeyChar() == 'I') { // Check if 'I' key is pressed
+            showInfo = !showInfo; // Toggle the value of showInfo
+            repaint(); // Repaint the panel to reflect the change
+
+            if (showInfo) { // If showInfo is true
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        showInfo = false; // Set showInfo back to false after 3 seconds
+                        repaint(); // Repaint the panel to reflect the change
+                    }
+                }, 3000); // Schedule the task to run after 3000 milliseconds (3 seconds)
+            }
+        }
+    }
+
+
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+
 
     //action listiner class:
     public class AL extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
             epsilon.keyPressed(e);
+
 
         }
 
