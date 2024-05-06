@@ -9,32 +9,37 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MenuFrame extends JFrame implements ActionListener{
+public class MenuFrame extends JFrame {
+     CardLayout cardLayout;
+     JPanel cardPanel;
     JPanel menuPanel;
-    JButton startButton;
-    JButton exitButton;
-    JButton settingButton;
-    JButton skillTreeButton;
-    JButton tutorialButton;
+
+    SettingPanel settingPanel;
+    GameOverPanel gameOverPanel;
+
+    GameFrame gameFrame;
+
+
+
 
     public MenuFrame(){
-        startButton = new JButton("Start");
-        startButton.setBounds(100,80,70,40);
-        startButton.setForeground(Color.black);
-        startButton.setBackground(Color.red);
-        startButton.addActionListener(this);
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
 
+        menuPanel = new MenuPanel(this); // Assuming your menu panel is named MenuPanel
+        settingPanel = new SettingPanel(this);
+        gameOverPanel = new GameOverPanel();
 
+        cardPanel.add(menuPanel, "menuPanel"); // Add menuPanel to cardPanel
+        cardPanel.add(settingPanel,"settingsPanel"); // Add settingPanel to cardPanel
+        cardPanel.add(gameOverPanel,"gameOverPanel"); // Add gameOverPanel to cardPanel
 
-        menuPanel = new JPanel();
-        menuPanel.setLayout(null);
-        menuPanel.setBackground(Color.black);
-        menuPanel.add(startButton);
-
+        // Add the cardPanel to the MenuFrame
+        getContentPane().add(cardPanel, BorderLayout.CENTER);
 
         this.setTitle("Window Kill");
-        this.add(menuPanel);
-        this.setSize(300,300);
+     //   getContentPane().add(cardPanel, BorderLayout.CENTER); //add the card panel to the frame!
+        this.setSize(300,500);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,57 +48,4 @@ public class MenuFrame extends JFrame implements ActionListener{
      //   Runtime.getRuntime().addShutdownHook(new Thread(() -> restoreAllWindows()));
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private void minimizeAllWindowsExcept() {
-        User32 user32 = User32.INSTANCE;
-        WinDef.HWND hwndFrame = new WinDef.HWND(Native.getWindowPointer(this));
-
-        user32.EnumWindows((h, p) -> {
-            if (h != null && !h.equals(hwndFrame) && user32.IsWindowVisible(h)) {
-                user32.ShowWindow(h, User32.SW_MINIMIZE);
-            }
-            return true;
-        }, null);
-    }
-    private static void restoreAllWindows() {
-        User32 user32 = User32.INSTANCE;
-        user32.EnumWindows((h, p) -> {
-            if (h != null && user32.IsWindowVisible(h)) {
-                user32.ShowWindow(h, User32.SW_RESTORE);
-            }
-            return true;
-        }, null);
-    }
-
-
-
-
-
-
-
-
-
-
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == startButton){
-
-         //   minimizeAllWindowsExcept();
-            this.dispose();
-            GameFrame gameFrame = new GameFrame();
-        }
-    }
 }
