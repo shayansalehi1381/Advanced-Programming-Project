@@ -20,6 +20,7 @@ public class SquareEnemy extends Rectangle {
     int xDeath;
     int yDeath;
     int inside = 0;
+    int lastSpeed;
 
     public SquareEnemy(GameFrame gameFrame){
         this.gameFrame = gameFrame;
@@ -93,6 +94,9 @@ public class SquareEnemy extends Rectangle {
             Rectangle epsilonRect = new Rectangle(epsilon.xPos,epsilon.yPos,epsilon.width,epsilon.height);
             if (Square.intersects(epsilonRect)){
 
+                epsilon.handleImpact(this);
+                epsilon.HP -=6;
+                System.out.println(epsilon.HP);
                 return true;
             }
         return false;
@@ -117,8 +121,8 @@ public class SquareEnemy extends Rectangle {
             public void run() {
                 count++;
                 if (count <= 1) {
-                    xPos += (oppositeX - xPos) / 4; // Move 1/10th of the distance each iteration
-                    yPos += (oppositeY - yPos) / 4;
+                    xPos += ((oppositeX - xPos)) * 2; // Move 1/10th of the distance each iteration
+                    yPos += ((oppositeY - yPos)) * 2 ;
                 } else {
                     timer.cancel();
                 }

@@ -32,7 +32,10 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
     int HP = 100;
     int XP = 0;
 
+
     boolean impactTriangle = false;
+    boolean impactSquare = false;
+
 
     private final int acceleration = 1;
     private final int deceleration = 1;
@@ -45,13 +48,15 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
 
 
     public void paint(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.RED); // Set color of the triangle's outline
-        g2d.setStroke(new BasicStroke(8));
+        if (HP > 0){
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setColor(Color.RED); // Set color of the triangle's outline
+            g2d.setStroke(new BasicStroke(8));
             g.drawOval(xPos, yPos, width, height);
             for (int i = 0; i < shots.size(); i++) {
                 Shot shot = shots.get(i);
                 shot.paint(g);
+            }
         }
     }
 
@@ -97,12 +102,10 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
                 for (int i = 0; i < GamePanel.triangles.size(); i++) {
                     TrigorathEnemy trigorathEnemy = GamePanel.triangles.get(i);
                     if (trigorathEnemy != triangle){
-
-                        //  System.out.println("hi");
                         trigorathEnemy.impactedWithEpsilon = true;
 
                         trigorathEnemy.speed *= -1;
-                        System.out.println("ID:"+trigorathEnemy.ID + trigorathEnemy.speed);
+
                         trigorathEnemy.lastSpeed = trigorathEnemy.speed;
 
                         Timer timer = new Timer();
@@ -127,7 +130,7 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
             xSpeed += normalizedDX * impactForce;
             ySpeed += normalizedDY * impactForce;
             triangle.speed *= -1;
-            System.out.println(triangle.speed);
+
             triangle.lastSpeed = triangle.speed;
             // Update position
             xPos += xSpeed;
@@ -149,6 +152,79 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
 
         }
 
+
+    }
+
+
+
+
+
+
+    public void handleImpact(SquareEnemy squareEnemy){
+        double dx = xPos - squareEnemy.xPos;
+        double dy = yPos - squareEnemy.yPos;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        double normalizedDX = dx / distance;
+        double normalizedDY = dy / distance;
+        double impactForce = 5;
+        if (distance <= 30) {
+
+            squareEnemy.impactedWithEpsilon = true;
+            this.impactSquare = true;
+
+
+            if (squareEnemy.impactedWithEpsilon == true){
+                for (int i = 0; i < GamePanel.squares.size(); i++) {
+                    SquareEnemy squareEnemy1 = GamePanel.squares.get(i);
+                    if (squareEnemy1 != squareEnemy){
+                        squareEnemy1.impactedWithEpsilon = true;
+
+                        squareEnemy1.speed *= -1;
+                        squareEnemy1.lastSpeed = squareEnemy1.speed;
+
+                        Timer timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+
+                                squareEnemy.impactedWithEpsilon = false;
+                                impactSquare = false;
+                            }
+                        }, 100);
+
+
+
+                    }
+                }
+            }
+
+
+
+            // Apply a force away from the triangle
+            xSpeed += normalizedDX * impactForce;
+            ySpeed += normalizedDY * impactForce;
+            squareEnemy.speed *= -1;
+
+            squareEnemy.lastSpeed = squareEnemy.speed;
+            // Update position
+            xPos += xSpeed;
+            yPos += ySpeed;
+
+            this.setBounds(xPos, yPos, width, height);
+
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+
+                    squareEnemy.impactedWithEpsilon = false;
+                    impactSquare = false;
+
+                }
+            }, 300);
+
+
+        }
 
     }
 
