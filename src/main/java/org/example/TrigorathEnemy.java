@@ -90,6 +90,10 @@ public class TrigorathEnemy extends Polygon {
                 gameFrame.gamePanel.playSE(gameFrame.gamePanel.sound.enemyInsideSE);
             }
         }
+
+        avoidCollisionWithOtherTriangles();
+        avoidCollisionWithSquares();
+
         int epsilonX = epsilon.xPos;
         int epsilonY = epsilon.yPos;
 
@@ -187,6 +191,75 @@ public class TrigorathEnemy extends Polygon {
             }
         }
         return false;
+    }
+
+
+
+
+
+
+
+
+    public void avoidCollisionWithOtherTriangles() {
+        Polygon triangle = new Polygon(this.xPoints, this.yPoints, this.nPoints);
+        for (TrigorathEnemy otherTriangle : GamePanel.triangles) {
+            Polygon otherTrianglew = new Polygon(otherTriangle.xPoints, otherTriangle.yPoints, otherTriangle.nPoints);
+            if (otherTriangle != this && triangle.intersects(otherTrianglew.getBounds2D())) {
+                // Move away from the other triangle
+
+                int dx = xP2 - otherTriangle.xP2;
+                int dy = yP2 - otherTriangle.yP2;
+                double magnitude = Math.sqrt(dx * dx + dy * dy);
+                double normalizedDX = dx / magnitude;
+                double normalizedDY = dy / magnitude;
+                int avoidanceDistance = 25; // Adjust the avoidance distance as needed
+                xP1 += normalizedDX * avoidanceDistance;
+                xP2 += normalizedDX * avoidanceDistance;
+                xP3 += normalizedDX * avoidanceDistance;
+                yP1 += normalizedDY * avoidanceDistance;
+                yP2 += normalizedDY * avoidanceDistance;
+                yP3 += normalizedDY * avoidanceDistance;
+
+
+
+                otherTriangle.xP1 += normalizedDX * -avoidanceDistance;
+                otherTriangle.xP2 += normalizedDX * -avoidanceDistance;
+                otherTriangle.xP3 += normalizedDX * -avoidanceDistance;
+                otherTriangle.yP1 += normalizedDY * -avoidanceDistance;
+                otherTriangle.yP2 += normalizedDY * -avoidanceDistance;
+                otherTriangle.yP3 += normalizedDY * -avoidanceDistance;
+            }
+        }
+    }
+
+
+
+    public void avoidCollisionWithSquares() {
+        Polygon triangle = new Polygon(this.xPoints, this.yPoints, this.nPoints);
+        for (SquareEnemy square : GamePanel.squares) {
+            Rectangle squareRec = new Rectangle(square.xPos,square.yPos,square.width,square.height);
+            if (triangle.getBounds2D().intersects(squareRec)) {
+
+                // Move away from the square
+                int dx = xP2 - square.xPos;
+                int dy = yP2 - square.yPos;
+                double magnitude = Math.sqrt(dx * dx + dy * dy);
+                double normalizedDX = dx / magnitude;
+                double normalizedDY = dy / magnitude;
+                int avoidanceDistance = 10; // Adjust the avoidance distance as needed
+                xP1 += normalizedDX * avoidanceDistance;
+                xP2 += normalizedDX * avoidanceDistance;
+                xP3 += normalizedDX * avoidanceDistance;
+                yP1 += normalizedDY * avoidanceDistance;
+                yP2 += normalizedDY * avoidanceDistance;
+                yP3 += normalizedDY * avoidanceDistance;
+
+
+                square.xPos += normalizedDX * -avoidanceDistance;
+                square.yPos += normalizedDX * -avoidanceDistance;
+
+            }
+        }
     }
 
 

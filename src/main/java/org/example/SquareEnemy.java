@@ -59,6 +59,11 @@ public class SquareEnemy extends Rectangle {
                 gameFrame.gamePanel.playSE(gameFrame.gamePanel.sound.enemyInsideSE);
             }
         }
+
+
+        avoidCollisionWithOtherSquares();
+        avoidCollisionWithTriangles();
+
         int epsilonX = epsilon.xPos;
         int epsilonY = epsilon.yPos;
 
@@ -147,5 +152,73 @@ public class SquareEnemy extends Rectangle {
             }
         }, 0, 100); // Adjust the delay and period as needed (0 ms delay, 100 ms period)
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // SquareEnemy.java
+    public void avoidCollisionWithOtherSquares() {
+        for (SquareEnemy otherSquare : GamePanel.squares) {
+            if (otherSquare != this ) {
+                Rectangle squareRec = new Rectangle(this.xPos,this.yPos,this.width,this.height);
+                Rectangle otherRec = new Rectangle(otherSquare.xPos,otherSquare.yPos,otherSquare.width,otherSquare.height);
+
+                if (squareRec.intersects(otherRec)){
+                    // Move away from the other square
+                    int dx = xPos - otherSquare.xPos;
+                    int dy = yPos - otherSquare.yPos;
+                    double magnitude = Math.sqrt(dx * dx + dy * dy);
+                    double normalizedDX = dx / magnitude;
+                    double normalizedDY = dy / magnitude;
+                    int avoidanceDistance = 15; // Adjust the avoidance distance as needed
+                    xPos += normalizedDX * avoidanceDistance;
+                    yPos += normalizedDY * avoidanceDistance;
+                    otherSquare.xPos +=  normalizedDX * -avoidanceDistance;
+                    otherSquare.yPos += normalizedDX * -avoidanceDistance;
+                    moveOtherSquaresBack(gameFrame.gamePanel.epsilon);
+                }
+            }
+        }
+    }
+
+    public void avoidCollisionWithTriangles() {
+        Rectangle squareRec = new Rectangle(this.xPos,this.yPos,this.width,this.height);
+        for (int i = 0; i < GamePanel.triangles.size(); i++) {
+            TrigorathEnemy trigorathEnemy = GamePanel.triangles.get(i);
+            Polygon triangle = new Polygon(trigorathEnemy.xPoints, trigorathEnemy.yPoints, trigorathEnemy.nPoints);
+            if (squareRec.intersects(triangle.getBounds2D())){
+                // Move away from the triangle
+                int dx = xPos - triangle.xpoints[1];
+                int dy = yPos - triangle.ypoints[1];
+                double magnitude = Math.sqrt(dx * dx + dy * dy);
+                double normalizedDX = dx / magnitude;
+                double normalizedDY = dy / magnitude;
+                int avoidanceDistance = 30; // Adjust the avoidance distance as needed
+                xPos += normalizedDX * avoidanceDistance;
+                yPos += normalizedDY * avoidanceDistance;
+
+
+                trigorathEnemy.xP1 += normalizedDX * -avoidanceDistance;
+                trigorathEnemy.xP2 += normalizedDX * -avoidanceDistance;
+                trigorathEnemy.xP3 += normalizedDX * -avoidanceDistance;
+                trigorathEnemy.yP1 += normalizedDX * -avoidanceDistance;
+                trigorathEnemy.yP2 += normalizedDX * -avoidanceDistance;
+                trigorathEnemy.yP3 += normalizedDX * -avoidanceDistance;
+            }
+        }
+    }
+
+
 
 }

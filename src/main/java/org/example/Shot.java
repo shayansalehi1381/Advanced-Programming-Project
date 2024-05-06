@@ -124,7 +124,6 @@ public class Shot extends Rectangle {
 
             for (SquareEnemy otherEnemy : GamePanel.squares) {
                     otherEnemy.moveOtherSquaresBack(epsilon);
-                System.out.println("done");
             }
 
             epsilon.shots.remove(this);
