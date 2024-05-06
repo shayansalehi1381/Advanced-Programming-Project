@@ -48,6 +48,7 @@ public class GamePanel extends JPanel  {
                 if (triangles.isEmpty()) {
                     if (squares.isEmpty()) {
                         System.out.println("Wave 1 passed!");
+                        playSE(sound.waveEndSE);
                         Wave = 2;
                         creation++;
                         new Wave(gameFrame);
@@ -59,6 +60,7 @@ public class GamePanel extends JPanel  {
              if (triangles.isEmpty()){
                  if (squares.isEmpty()){
                      System.out.println("Wave 2 passed!");
+                     playSE(sound.waveEndSE);
                      Wave = 3;
                      new Wave(gameFrame);
                  }

@@ -17,6 +17,7 @@ public class SquareEnemy extends Rectangle {
     boolean impactedWithEpsilon = false;
     int xDeath;
     int yDeath;
+    int inside = 0;
 
 
     public SquareEnemy(GameFrame gameFrame){
@@ -51,6 +52,12 @@ public class SquareEnemy extends Rectangle {
 
 
     public void moveTowardsEpsilon(Epsilon epsilon) {
+        if (gameFrame.contains(this.xPos,this.yPos)){
+            inside++;
+            if (inside == 1){
+                gameFrame.gamePanel.playSE(gameFrame.gamePanel.sound.enemyInsideSE);
+            }
+        }
         int epsilonX = epsilon.xPos;
         int epsilonY = epsilon.yPos;
 

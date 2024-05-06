@@ -31,6 +31,7 @@ public class TrigorathEnemy extends Polygon {
 
     int xDeath;
     int yDeath;
+    int inside = 0;
 
 
     public TrigorathEnemy(GameFrame gameFrame) {
@@ -81,6 +82,13 @@ public class TrigorathEnemy extends Polygon {
 
 
     public void moveTowardsEpsilon(Epsilon epsilon) {
+
+        if (gameFrame.contains(this.xP2,this.yP2)){
+            inside++;
+            if (inside == 1){
+                gameFrame.gamePanel.playSE(gameFrame.gamePanel.sound.enemyInsideSE);
+            }
+        }
         int epsilonX = epsilon.xPos;
         int epsilonY = epsilon.yPos;
 

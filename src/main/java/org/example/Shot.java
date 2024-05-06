@@ -98,9 +98,11 @@ public class Shot extends Rectangle {
         if (polygon.contains(xPos, yPos)) {
             triangle.handleImpact(epsilon); // Call the method to handle the impact
             triangle.HP -= 5;
+            epsilon.gameFrame.gamePanel.playSE(epsilon.gameFrame.gamePanel.sound.damageSE);
             if (triangle.HP <= 0){
                 triangle.xDeath = triangle.xP2;
                 triangle.yDeath = triangle.yP2;
+                epsilon.gameFrame.gamePanel.playSE(epsilon.gameFrame.gamePanel.sound.killEnemySE);
                 new Collectable(triangle);
                 new Collectable(triangle);
                         GamePanel.triangles.remove(triangle);
@@ -118,7 +120,9 @@ public class Shot extends Rectangle {
         Rectangle squareRect = new Rectangle(squareEnemy.xPos,squareEnemy.yPos,squareEnemy.width,squareEnemy.height);
         if (bullet.intersects(squareRect)){
             squareEnemy.HP -= 5;
+            epsilon.gameFrame.gamePanel.playSE(epsilon.gameFrame.gamePanel.sound.damageSE);
             if (squareEnemy.HP <= 0){
+                epsilon.gameFrame.gamePanel.playSE(epsilon.gameFrame.gamePanel.sound.killEnemySE);
                 squareEnemy.xDeath = squareEnemy.xPos;
                 squareEnemy.yDeath = squareEnemy.yPos;
                 new Collectable(squareEnemy);
