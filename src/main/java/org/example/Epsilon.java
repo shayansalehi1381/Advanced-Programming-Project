@@ -32,19 +32,31 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
     int HP = 100;
     int XP = 0;
 
+    public static int Movement = 1;
+
 
     boolean impactTriangle = false;
     boolean impactSquare = false;
 
 
-    private final int acceleration = 1;
-    private final int deceleration = 1;
+    private  int acceleration = 1;
+    private  int deceleration = 1;
     public boolean dead = false;
 
     public Epsilon(GameFrame gameFrame) {
 
         super();
         this.gameFrame = gameFrame;
+
+        if (Movement == 1){
+            acceleration = 1;
+        }
+        else if (Movement == 2){
+            acceleration = 2;
+        }
+        else if (Movement == 3){
+            acceleration = 3;
+        }
     }
 
 

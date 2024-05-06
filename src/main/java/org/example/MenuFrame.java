@@ -45,7 +45,18 @@ public class MenuFrame extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Adding a shutdown hook to restore minimized windows when the program stops
-     //   Runtime.getRuntime().addShutdownHook(new Thread(() -> restoreAllWindows()));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> restoreAllWindows()));
+    }
+
+
+    private static void restoreAllWindows() {
+        User32 user32 = User32.INSTANCE;
+        user32.EnumWindows((h, p) -> {
+            if (h != null && user32.IsWindowVisible(h)) {
+                user32.ShowWindow(h, User32.SW_RESTORE);
+            }
+            return true;
+        }, null);
     }
 
 }

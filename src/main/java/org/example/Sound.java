@@ -4,6 +4,7 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 public class Sound {
@@ -20,7 +21,8 @@ public class Sound {
     float currentVolume = 0;
     FloatControl fc;
     boolean mute = false;
-
+    public static float VOLUME;
+    public static ArrayList<Sound> sounds = new ArrayList<>();
 
 
     public Sound(){
@@ -30,6 +32,7 @@ public class Sound {
          gameOverSE = new File("src/main/java/org/example/sound/gameOver.wav");
          killEnemySE = new File("src/main/java/org/example/sound/killEnemy.wav");
          waveEndSE = new File("src/main/java/org/example/sound/waveEnd.wav");
+         sounds.add(this);
 
     }
 

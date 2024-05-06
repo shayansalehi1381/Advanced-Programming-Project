@@ -94,15 +94,7 @@ public class MenuPanel extends JPanel implements ActionListener {
 
 
 
-    private static void restoreAllWindows() {
-        User32 user32 = User32.INSTANCE;
-        user32.EnumWindows((h, p) -> {
-            if (h != null && user32.IsWindowVisible(h)) {
-                user32.ShowWindow(h, User32.SW_RESTORE);
-            }
-            return true;
-        }, null);
-    }
+
 
 
 
@@ -110,7 +102,7 @@ public class MenuPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == startButton){
 
-            //   minimizeAllWindowsExcept();
+               minimizeAllWindowsExcept();
 
             menuFrame.gameFrame = new GameFrame();
         }
