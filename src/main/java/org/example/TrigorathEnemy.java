@@ -25,13 +25,14 @@ public class TrigorathEnemy extends Polygon {
 
     int lastSpeed;
 
-    boolean impactForImpact = false;
     int ID;
     static int nextID = 1;
 
     int xDeath;
     int yDeath;
     int inside = 0;
+
+    static boolean mainImpact;
 
 
     public TrigorathEnemy(GameFrame gameFrame) {
@@ -144,7 +145,12 @@ public class TrigorathEnemy extends Polygon {
         double magnitude = Math.sqrt(dx * dx + dy * dy);
         double normalizedDX = dx / magnitude;
         double normalizedDY = dy / magnitude;
-        int impactDistance = 50; // Adjust the impact distance as needed
+        int impactDistance;
+        if (mainImpact){
+            impactDistance = 50;
+        }
+        else impactDistance = 10;
+        // Adjust the impact distance as needed
 
         //********************
         xP1 += normalizedDX * impactDistance;

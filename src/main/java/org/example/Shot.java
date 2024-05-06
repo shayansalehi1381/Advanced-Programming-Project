@@ -91,25 +91,48 @@ public class Shot extends Rectangle {
 
 
 
-    public void collidWithTriangle(TrigorathEnemy triangle) {
+    // Shot.java
+    public void collidWithTriangle(TrigorathEnemy triangleEnemy) {
+        Rectangle bullet = new Rectangle(xPos, yPos, width, height);
+        Polygon triangle = new Polygon(triangleEnemy.xPoints, triangleEnemy.yPoints, triangleEnemy.nPoints);
 
-        Polygon polygon = new Polygon(triangle.xPoints, triangle.yPoints, triangle.nPoints);
-
-        if (polygon.contains(xPos, yPos)) {
-            triangle.handleImpact(epsilon); // Call the method to handle the impact
-            triangle.HP -= 5;
+        if (bullet.intersects(triangle.getBounds2D())) {
+            triangleEnemy.HP -= 5;
             epsilon.gameFrame.gamePanel.playSE(epsilon.gameFrame.gamePanel.sound.damageSE);
-            if (triangle.HP <= 0){
-                triangle.xDeath = triangle.xP2;
-                triangle.yDeath = triangle.yP2;
+
+            if (triangleEnemy.HP <= 0) {
                 epsilon.gameFrame.gamePanel.playSE(epsilon.gameFrame.gamePanel.sound.killEnemySE);
-                new Collectable(triangle);
-                new Collectable(triangle);
-                        GamePanel.triangles.remove(triangle);
+                triangleEnemy.xDeath = triangleEnemy.xP2;
+                triangleEnemy.yDeath = triangleEnemy.yP2;
+                new Collectable(triangleEnemy);
+                GamePanel.triangles.remove(triangleEnemy);
             }
+
+
+            // Apply impact effect to the hit triangle
+            TrigorathEnemy.mainImpact = true;
+            triangleEnemy.handleImpact(epsilon);
+            TrigorathEnemy.mainImpact = false;
+            // Apply impact effect to other triangle enemies
+            for (TrigorathEnemy otherEnemy : GamePanel.triangles) {
+                if (otherEnemy != triangleEnemy) {
+                    otherEnemy.handleImpact(epsilon);
+                }
+            }
+            TrigorathEnemy.mainImpact = true;
+
+
+            for (SquareEnemy otherEnemy : GamePanel.squares) {
+                    otherEnemy.moveOtherSquaresBack(epsilon);
+                System.out.println("done");
+            }
+
             epsilon.shots.remove(this);
+
+
         }
     }
+
 
 
 
@@ -129,6 +152,20 @@ public class Shot extends Rectangle {
                 GamePanel.squares.remove(squareEnemy);
             }
             epsilon.shots.remove(this);
+            squareEnemy.moveBack(epsilon);
+
+
+            for (SquareEnemy otherEnemy : GamePanel.squares) {
+                if (otherEnemy != squareEnemy) {
+                    otherEnemy.moveOtherSquaresBack(epsilon);
+                }
+            }
+
+                TrigorathEnemy.mainImpact = false;
+            for (TrigorathEnemy otherEnemy : GamePanel.triangles) {
+                    otherEnemy.handleImpact(epsilon);
+            }
+            TrigorathEnemy.mainImpact = true;
         }
     }
 

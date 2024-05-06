@@ -2,6 +2,8 @@ package org.example;
 
 import java.awt.*;
 import java.util.Random;
+import java.util.TimerTask;
+import java.util.Timer;
 
 public class SquareEnemy extends Rectangle {
     GameFrame gameFrame;
@@ -18,7 +20,6 @@ public class SquareEnemy extends Rectangle {
     int xDeath;
     int yDeath;
     int inside = 0;
-
 
     public SquareEnemy(GameFrame gameFrame){
         this.gameFrame = gameFrame;
@@ -75,15 +76,7 @@ public class SquareEnemy extends Rectangle {
         double normalizedDY = dy / magnitude;
 
         if (!impactedWithEpsilon) {
-            int acceleration = 1;
-            int deceleration = 1;
-            if (magnitude >= 150) {
-                // Accelerate to maximum speed of 3
-                speed = Math.min(speed + acceleration, 3);
-            } else {
-                // Decelerate with a minimum speed of 1
-                speed = Math.max(speed - deceleration, 1);
-            }
+            speed = 2;
         }
         xPos += normalizedDX * speed;
         yPos += normalizedDY * speed;
@@ -99,4 +92,60 @@ public class SquareEnemy extends Rectangle {
             }
         return false;
     }
+
+
+
+
+        //impact:Shot _ Square
+    public void moveBack(Epsilon epsilon) {
+        int moveDistance = 10; // Adjust this value as needed
+
+        // Calculate the direction opposite to the epsilon's direction
+        int oppositeX = xPos + (xPos - epsilon.xPos);
+        int oppositeY = yPos + (yPos - epsilon.yPos);
+
+        // Move the square enemy back for a brief period
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            int count = 0;
+            @Override
+            public void run() {
+                count++;
+                if (count <= 1) {
+                    xPos += (oppositeX - xPos) / 4; // Move 1/10th of the distance each iteration
+                    yPos += (oppositeY - yPos) / 4;
+                } else {
+                    timer.cancel();
+                }
+            }
+        }, 0, 100); // Adjust the delay and period as needed (0 ms delay, 100 ms period)
+    }
+
+
+
+    //when a shot hits a square the impact affects other squares'movement:
+    public void moveOtherSquaresBack(Epsilon epsilon) {
+
+
+        // Calculate the direction opposite to the epsilon's direction
+        int oppositeX = xPos + (xPos - epsilon.xPos);
+        int oppositeY = yPos + (yPos - epsilon.yPos);
+
+        // Move the square enemy back for a brief period
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            int count = 0;
+            @Override
+            public void run() {
+                count++;
+                if (count <= 1) {
+                    xPos += (oppositeX - xPos) / 12; // Move 1/10th of the distance each iteration
+                    yPos += (oppositeY - yPos) / 12;
+                } else {
+                    timer.cancel();
+                }
+            }
+        }, 0, 100); // Adjust the delay and period as needed (0 ms delay, 100 ms period)
+    }
+
 }
