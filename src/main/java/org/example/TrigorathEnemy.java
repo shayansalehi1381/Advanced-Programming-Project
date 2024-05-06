@@ -98,12 +98,12 @@ public class TrigorathEnemy extends Polygon {
         int epsilonY = epsilon.yPos;
 
         // Calculate direction towards epsilon
-        int dx = epsilonX - ((xP1+xP3)/2);
-        int dy = epsilonY - ((yP2 + yP1)/2);
+        int dx = epsilonX - xP2;
+        int dy = epsilonY - yP2;
 
         // Normalize the direction vector
-        double magnitude = Math.sqrt(dx * dx + dy * dy);
-        if (magnitude < 2) { // Adjust the threshold as needed
+        double magnitude = Math.sqrt((dx * dx) + (dy * dy));
+        if (magnitude < 1) { // Adjust the threshold as needed
 
             return;
         }
@@ -111,14 +111,10 @@ public class TrigorathEnemy extends Polygon {
         double normalizedDY = dy / magnitude;
 
         if (!impactedWithEpsilon) {
-            int acceleration = 1;
-            int deceleration = 1;
-            if (magnitude >= 150) {
-                // Accelerate to maximum speed of 3
-                speed = Math.min(speed + acceleration, 3);
+            if (magnitude >= 10) {
+                speed =  2;
             } else {
-                // Decelerate with a minimum speed of 1
-                speed = Math.max(speed - deceleration, 1);
+                speed = 1;
             }
         }
 

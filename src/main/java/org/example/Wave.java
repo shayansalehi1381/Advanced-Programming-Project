@@ -13,7 +13,7 @@ public class Wave {
         gameFrame = frame;
         if (GamePanel.Wave == 1){
             triangles = 1  ;
-            squares = 2;
+            squares = 0;
             for (int i = 0; i < triangles; i++) {
                 TrigorathEnemy trigorathEnemy = new TrigorathEnemy(gameFrame);
             }
