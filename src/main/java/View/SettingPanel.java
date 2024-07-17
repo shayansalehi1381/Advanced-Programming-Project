@@ -1,8 +1,11 @@
 package View;
 
+import Factory.WaveConfiguration;
 import Model.Epsilon;
 import Controller.Sound;
 import Controller.Wave;
+import Factory.WaveEnemyFactory;
+import Factory.WaveConfiguration;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -147,7 +150,7 @@ public class SettingPanel extends JPanel implements ActionListener , ChangeListe
             if (e.getSource() == difficultySlider){
                 int value = difficultySlider.getValue();
                 if (value == 0){
-                    Wave.GameDifficulty = 1;
+                    Wave.GameDifficulty =1;
                 }
                 else if (value == 2){
                     Wave.GameDifficulty =2;

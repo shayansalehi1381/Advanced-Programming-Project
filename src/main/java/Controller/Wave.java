@@ -1,154 +1,48 @@
 package Controller;
 
+import Factory.WaveConfiguration;
+import Factory.WaveEnemyFactory;
 import Model.SquareEnemy;
 import Model.TrigorathEnemy;
 import View.GameFrame;
 import View.GamePanel;
 
+import java.util.Map;
+
 public class Wave {
 
-
     public static int GameDifficulty = 1;
-    GameFrame gameFrame;
-    int triangles ;
-    int squares;
+    private static final Map<Integer, WaveConfiguration> difficultyConfigurations = Map.of(
+            1, new WaveConfiguration(1, 2),
+            2, new WaveConfiguration(3, 2),
+            3, new WaveConfiguration(4, 2)
+    );
+
+    private WaveEnemyFactory enemyFactory;
+
     public Wave(GameFrame frame) {
-        gameFrame = frame;
-        if (GameDifficulty == 1){
-            if (GamePanel.Wave == 1){
-                triangles = 1  ;
-                squares = 2;
-                for (int i = 0; i < triangles; i++) {
-                    TrigorathEnemy trigorathEnemy = new TrigorathEnemy(gameFrame);
-                }
 
-                for (int j = 0; j < squares; j++) {
-                    SquareEnemy squareEnemy = new SquareEnemy(gameFrame);
-                }
+        int waveNumber = 1; // Replace with actual logic to get wave number
 
-            }
-
-
-            if (GamePanel.Wave == 2){
-                triangles = 2;
-                squares = 4;
-                for (int i = 0; i < triangles; i++) {
-                    TrigorathEnemy trigorathEnemy = new TrigorathEnemy(gameFrame);
-                }
-
-                for (int j = 0; j < squares; j++) {
-                    SquareEnemy squareEnemy = new SquareEnemy(gameFrame);
-                }
-
-            }
-
-
-            if (GamePanel.Wave == 3){
-                triangles = 3;
-                squares = 5;
-                for (int i = 0; i < triangles; i++) {
-                    TrigorathEnemy trigorathEnemy = new TrigorathEnemy(gameFrame);
-                }
-
-                for (int j = 0; j < squares; j++) {
-                    SquareEnemy squareEnemy = new SquareEnemy(gameFrame);
-                }
-
-            }
+        if (difficultyConfigurations.containsKey(GameDifficulty)) {
+            WaveConfiguration configuration = difficultyConfigurations.get(GameDifficulty);
+            configureEnemies(configuration, frame);
         }
+    }
 
+    private void configureEnemies(WaveConfiguration configuration, GameFrame frame) {
+        enemyFactory = new WaveEnemyFactory(frame);
 
-
-        if (GameDifficulty == 2){
-            if (GamePanel.Wave == 1){
-                triangles = 3  ;
-                squares = 2;
-                for (int i = 0; i < triangles; i++) {
-                    TrigorathEnemy trigorathEnemy = new TrigorathEnemy(gameFrame);
-                }
-
-                for (int j = 0; j < squares; j++) {
-                    SquareEnemy squareEnemy = new SquareEnemy(gameFrame);
-                }
-
-            }
-
-
-            if (GamePanel.Wave == 2){
-                triangles = 4;
-                squares = 4;
-                for (int i = 0; i < triangles; i++) {
-                    TrigorathEnemy trigorathEnemy = new TrigorathEnemy(gameFrame);
-                }
-
-                for (int j = 0; j < squares; j++) {
-                    SquareEnemy squareEnemy = new SquareEnemy(gameFrame);
-                }
-
-            }
-
-
-            if (GamePanel.Wave == 3){
-                triangles = 5;
-                squares = 5;
-                for (int i = 0; i < triangles; i++) {
-                    TrigorathEnemy trigorathEnemy = new TrigorathEnemy(gameFrame);
-                }
-
-                for (int j = 0; j < squares; j++) {
-                    SquareEnemy squareEnemy = new SquareEnemy(gameFrame);
-                }
-
-            }
+        if (GamePanel.Wave == 1) {
+            enemyFactory.createTrigorathEnemies(configuration.getTriangles());
+            enemyFactory.createSquareEnemies(configuration.getSquares());
+        } else if (GamePanel.Wave == 2) {
+            enemyFactory.createTrigorathEnemies(configuration.getTriangles() + 1);
+            enemyFactory.createSquareEnemies(configuration.getSquares() + 2);
+        } else if (GamePanel.Wave == 3) {
+            enemyFactory.createTrigorathEnemies(configuration.getTriangles() + 2);
+            enemyFactory.createSquareEnemies(configuration.getSquares() + 3);
         }
-
-
-
-
-        if (GameDifficulty == 3){
-            if (GamePanel.Wave == 1){
-                triangles = 4  ;
-                squares = 2;
-                for (int i = 0; i < triangles; i++) {
-                    TrigorathEnemy trigorathEnemy = new TrigorathEnemy(gameFrame);
-                }
-
-                for (int j = 0; j < squares; j++) {
-                    SquareEnemy squareEnemy = new SquareEnemy(gameFrame);
-                }
-
-            }
-
-
-            if (GamePanel.Wave == 2){
-                triangles = 5;
-                squares = 4;
-                for (int i = 0; i < triangles; i++) {
-                    TrigorathEnemy trigorathEnemy = new TrigorathEnemy(gameFrame);
-                }
-
-                for (int j = 0; j < squares; j++) {
-                    SquareEnemy squareEnemy = new SquareEnemy(gameFrame);
-                }
-
-            }
-
-
-            if (GamePanel.Wave == 3){
-                triangles = 6;
-                squares = 6;
-                for (int i = 0; i < triangles; i++) {
-                    TrigorathEnemy trigorathEnemy = new TrigorathEnemy(gameFrame);
-                }
-
-                for (int j = 0; j < squares; j++) {
-                    SquareEnemy squareEnemy = new SquareEnemy(gameFrame);
-                }
-
-            }
-        }
-
-
-
     }
 }
+

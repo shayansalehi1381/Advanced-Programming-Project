@@ -1,5 +1,7 @@
 package View;
 
+import Controller.CollectableController;
+import Controller.EpsilonController;
 import Controller.Sound;
 import Model.Collectable;
 import Model.Epsilon;
@@ -7,6 +9,8 @@ import Model.Shot;
 import Model.SquareEnemy;
 import Model.TrigorathEnemy;
 import Controller.Wave;
+import View.EntityView.CollectableView;
+import View.EntityView.EpsilonView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,12 +21,17 @@ import java.util.Timer;
 
 public class GamePanel extends JPanel implements KeyListener{
     GameFrame gameFrame;
-    public Epsilon epsilon;
+    EpsilonController epsilonController;
+
+
+    EpsilonView epsilonView;
+
 
     public static ArrayList<TrigorathEnemy> triangles;
     public static ArrayList<SquareEnemy> squares;
     public static ArrayList<Object> allEnemies;
-    public static ArrayList<Collectable> collectables;
+    CollectableController collectableController;
+    CollectableView collectableView;
     public static int creation = 0;
 
     public static boolean winTheGame= false;
@@ -48,11 +57,12 @@ public class GamePanel extends JPanel implements KeyListener{
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = screenSize.width;
         setBounds(1000,0,getWidth(),getHeight());
-        epsilon = new Epsilon(gameFrame);
+        epsilonController = new EpsilonController(new Epsilon(gameFrame));
+        epsilonView = new EpsilonView(epsilonController.getEpsilon());
         triangles = new ArrayList<>();
         squares = new ArrayList<>();
         allEnemies = new ArrayList<>();
-        collectables = new ArrayList<>();
+        collectableController = new CollectableController();
         setBackground(Color.BLACK);
         setFocusable(true); // Make the panel focusable
       //  requestFocusInWindow(); // Request focus when the frame is initialized
@@ -118,17 +128,17 @@ public class GamePanel extends JPanel implements KeyListener{
 
             Timer timer = new Timer();
 
-                int currentWidth = epsilon.width; // Initial width of Epsilon
+                int currentWidth = epsilonController.getEpsilon().width; // Initial width of Epsilon
                 int step = 2; // Step size for each iteration
 
 
                     if (currentWidth < epsilonFinalWidth ) {
                         // Increase the size of Epsilon
                         currentWidth += step;
-                        epsilon.width = currentWidth;
-                        epsilon.height = currentWidth;
-                        epsilon.xPos += step;
-                        epsilon.yPos += step;
+                        epsilonController.getEpsilon().width = currentWidth;
+                        epsilonController.getEpsilon().height = currentWidth;
+                        epsilonController.getEpsilon().xPos += step;
+                        epsilonController.getEpsilon().yPos += step;
                         repaint();
                     } else {
                         // Stop the timer when Epsilon reaches the final size
@@ -148,7 +158,7 @@ public class GamePanel extends JPanel implements KeyListener{
     public void paint(Graphics g){
         super.paint(g);
         //****************
-        epsilon.paint(g);
+        epsilonView.paint(g);
         for (int i = 0; i < triangles.size(); i++) {
             TrigorathEnemy trigorathEnemy = triangles.get(i);
             trigorathEnemy.paint(g);
@@ -158,9 +168,10 @@ public class GamePanel extends JPanel implements KeyListener{
             squareEnemy.paint(g);
         }//*********************************************
 
-        for (int i = 0; i < collectables.size(); i++) {
-            Collectable collectable = collectables.get(i);
-            collectable.paint(g);
+        for (int i = 0; i < collectableController.getCollectables().size(); i++) {
+            Collectable collectable = collectableController.getCollectables().get(i);
+            collectableView = new CollectableView(collectableController);
+            collectableView.paint(g);
         }
 
 
@@ -173,9 +184,9 @@ public class GamePanel extends JPanel implements KeyListener{
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial",Font.PLAIN,20));
             g.drawString("Wave: "+Wave,gameFrame.gamePanel.getX()+10 ,gameFrame.gamePanel.getY()+20);
-            g.drawString("XP: "+epsilon.XP,gameFrame.gamePanel.getX()+gameFrame.gamePanel.getWidth()-70 ,gameFrame.gamePanel.getY()+20);
+            g.drawString("XP: "+epsilonController.getEpsilon().XP,gameFrame.gamePanel.getX()+gameFrame.gamePanel.getWidth()-70 ,gameFrame.gamePanel.getY()+20);
 
-            g.drawString("HP: "+epsilon.HP,gameFrame.gamePanel.getX()+10 ,gameFrame.gamePanel.getY()+gameFrame.gamePanel.getHeight()-20);
+            g.drawString("HP: "+epsilonController.getEpsilon().HP,gameFrame.gamePanel.getX()+10 ,gameFrame.gamePanel.getY()+gameFrame.gamePanel.getHeight()-20);
 
             g.setFont(new Font("Arial",Font.PLAIN,10));
             g.drawString("Time Eplased: "+getElapsedTime(),gameFrame.gamePanel.getX()+gameFrame.gamePanel.getWidth()-100 ,gameFrame.gamePanel.getY()+gameFrame.gamePanel.getHeight()-20);
@@ -205,23 +216,23 @@ public class GamePanel extends JPanel implements KeyListener{
     }
 
     public void move(){
-        epsilon.move();
+        epsilonController.getEpsilon().move();
         for (TrigorathEnemy trigorathEnemy:triangles){
-            trigorathEnemy.moveTowardsEpsilon(epsilon);
+            trigorathEnemy.moveTowardsEpsilon(epsilonController.getEpsilon());
 
         }
 
 
         for (SquareEnemy squareEnemy:squares){
-            squareEnemy.moveTowardsEpsilon(epsilon);
+            squareEnemy.moveTowardsEpsilon(epsilonController.getEpsilon());
 
         }
 
         //***************************
         //coolectable moving
 
-        for (int i = 0; i < collectables.size(); i++) {
-            Collectable collectable = collectables.get(i);
+        for (int i = 0; i < collectableController.getCollectables().size(); i++) {
+            Collectable collectable = collectableController.getCollectables().get(i);
             collectable.move();
         }
     }
@@ -231,21 +242,21 @@ public class GamePanel extends JPanel implements KeyListener{
 
 
     public void checkCollisions(){
-        epsilon.collisionToFrame();
+        epsilonController.getEpsilon().collisionToFrame();
         winTheGame();
         //shots hit the frame
-        for (int i = epsilon.shots.size() -1 ; i >= 0 ; i--) {
-            Shot shot = epsilon.shots.get(i);
+        for (int i = epsilonController.getEpsilon().shots.size() -1 ; i >= 0 ; i--) {
+            Shot shot = epsilonController.getEpsilon().shots.get(i);
             {
                 if (GameFrame.collidDownWithShot == true || GameFrame.collidUpWithShot == true) {
 
-                epsilon.shots.remove(shot);
+                    epsilonController.getEpsilon().shots.remove(shot);
                     gameFrame.increasePanelHeight();
 
 
                 } else if (GameFrame.collidLeftWithShot == true || GameFrame.collidRightWithShot == true) {
 
-                    epsilon.shots.remove(shot);
+                    epsilonController.getEpsilon().shots.remove(shot);
                     gameFrame.increasePanelWidth();
 
                 }
@@ -274,21 +285,21 @@ public class GamePanel extends JPanel implements KeyListener{
         //triangles hit the epsilon
         for (int i = 0; i < triangles.size(); i++) {
             TrigorathEnemy trigorathEnemy = triangles.get(i);
-            trigorathEnemy.checkVerticesHitEpsilon(epsilon);
+            trigorathEnemy.checkVerticesHitEpsilon(epsilonController.getEpsilon());
         }
 
 
         //squares hit epsilon
         for (int i = 0; i < squares.size(); i++) {
             SquareEnemy squareEnemy = squares.get(i);
-            squareEnemy.checkVerticesHitEpsilon(epsilon);
+            squareEnemy.checkVerticesHitEpsilon(epsilonController.getEpsilon());
         }
 
 
         //epsilon hits the Collectables
-        for (int i = 0; i < collectables.size(); i++) {
-            Collectable collectable = collectables.get(i);
-            epsilon.collidWithCollectable(collectable);
+        for (int i = 0; i < collectableController.getCollectables().size(); i++) {
+            Collectable collectable = collectableController.getCollectables().get(i);
+            epsilonController.getEpsilon().collidWithCollectable(collectable);
         }
     }
 
@@ -327,23 +338,25 @@ public class GamePanel extends JPanel implements KeyListener{
     //action listiner class:
     public class AL extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
-            epsilon.keyPressed(e);
+            epsilonController.keyPressed(e);
 
 
         }
 
         public void keyReleased(KeyEvent e) {
-            epsilon.keyReleased(e);
+            epsilonController.keyReleased(e);
 
         }
     }
 
     public class ML extends MouseAdapter{
         public void mouseClicked(MouseEvent e){
-            epsilon.mouseClicked(e);
+            epsilonController.mouseClicked(e);
         }
 
     }
 
-
+    public EpsilonController getEpsilonController() {
+        return epsilonController;
+    }
 }

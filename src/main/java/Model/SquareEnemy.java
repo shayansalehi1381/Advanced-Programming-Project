@@ -199,7 +199,7 @@ public class SquareEnemy extends Rectangle {
                     yPos += normalizedDY * avoidanceDistance;
                     otherSquare.xPos +=  normalizedDX * -avoidanceDistance;
                     otherSquare.yPos += normalizedDX * -avoidanceDistance;
-                    moveOtherSquaresBack(gameFrame.gamePanel.epsilon);
+                    moveOtherSquaresBack(gameFrame.gamePanel.getEpsilonController().getEpsilon());
                 }
             }
         }

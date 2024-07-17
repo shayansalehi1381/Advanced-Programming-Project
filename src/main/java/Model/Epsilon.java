@@ -1,19 +1,16 @@
 package Model;
 
+import Controller.CollectableController;
 import View.GameFrame;
 import View.GamePanel;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TimerTask;
 import java.util.Timer;
 
-public class Epsilon extends Rectangle implements KeyListener, MouseListener {
+public class Epsilon extends Rectangle {
     GameFrame gameFrame;
     public ArrayList<Shot> shots = new ArrayList<>();
     public int xPos = 300;
@@ -22,11 +19,6 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
     public int height = 30;
     public int xSpeed;
     public int ySpeed;
-
-    boolean S_Key = false;
-    boolean W_Key = false;
-    boolean D_Key = false;
-    boolean A_Key = false;
     boolean collidWithLeft = false;
     boolean collidWithRight = false;
     boolean collidWithUp = false;
@@ -89,13 +81,7 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
             ySpeed = 0;
         }
 
-        if (impactTriangle == false){
-            if (W_Key == false && S_Key == false && D_Key == false && A_Key == false){
-                xSpeed = 0;
-                ySpeed = 0;
-            }
 
-        }
         xPos += xSpeed;
         yPos += ySpeed;
 
@@ -251,119 +237,8 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
 
 
 
-    @Override
-    public void keyTyped(KeyEvent e) {
 
 
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_W) {
-            W_Key = true;
-            if (GamePanel.winTheGame){
-                setDirectionX(0);
-                setDirectionY(0);
-            }
-            else {
-                if (collidWithDown == true) {
-                    collidWithDown = false;
-                }
-                if (S_Key == true) {
-                    setDirectionY(0);
-                    move();
-                } else
-                    setDirectionY(-acceleration);
-                move();
-            }
-        }
-
-        if (e.getKeyCode() == KeyEvent.VK_S) {
-            S_Key = true;
-            if (GamePanel.winTheGame){
-                setDirectionX(0);
-                setDirectionY(0);
-            }
-            else {
-                if (collidWithUp == true) {
-                    collidWithUp = false;
-                }
-
-                if (W_Key == true) {
-                    setDirectionY(0);
-                    move();
-                } else
-                    setDirectionY(3);
-                move();
-            }
-
-        }
-        //*****************************************************************
-        if (e.getKeyCode() == KeyEvent.VK_D) {
-            D_Key = true;
-            if (GamePanel.winTheGame){
-                setDirectionX(0);
-                setDirectionY(0);
-            }
-            else {
-                if (collidWithLeft == true) {
-                    collidWithLeft = false;
-                }
-                if (A_Key == true) {
-                    setDirectionX(0);
-                    move();
-                } else
-                    setDirectionX(3);
-                move();
-            }
-
-        }
-
-        if (e.getKeyCode() == KeyEvent.VK_A) {
-            A_Key = true;
-
-            if (GamePanel.winTheGame){
-                setDirectionX(0);
-                setDirectionY(0);
-            }
-            else {
-                if (collidWithRight == true) {
-                    collidWithRight = false;
-                }
-                if (D_Key == true) {
-                    setDirectionX(0);
-                    move();
-                } else
-                    setDirectionX(-acceleration);
-                move();
-            }
-            }
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_W) {
-            W_Key = false;
-            setDirectionY(0);
-            move();
-        } else if (e.getKeyCode() == KeyEvent.VK_S) {
-            S_Key = false;
-            setDirectionY(0);
-            move();
-        }
-
-        if (e.getKeyCode() == KeyEvent.VK_D) {
-            D_Key = false;
-            setDirectionX(0);
-            move();
-        }
-        if (e.getKeyCode() == KeyEvent.VK_A) {
-            A_Key = false;
-            setDirectionX(0);
-            move();
-        }
-    }
 
     public void setDirectionX(int number) {
         if (number == 0) {
@@ -478,7 +353,7 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
             collectable.catchedByEpsilon = true;
 
             // Use iterator to remove the collectable
-            Iterator<Collectable> iterator = GamePanel.collectables.iterator();
+            Iterator<Collectable> iterator = CollectableController.collectables.iterator();
             while (iterator.hasNext()) {
                 Collectable nextCollectable = iterator.next();
                 if (nextCollectable == collectable) {
@@ -489,35 +364,75 @@ public class Epsilon extends Rectangle implements KeyListener, MouseListener {
         }
     }
 
-
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        Shot shot = new Shot(this);
-        shots.add(shot);
-        shot.targetX = e.getX();
-        shot.targetY = e.getY();
-        shot.setTarget(shot.targetX, shot.targetY);
+    public ArrayList<Shot> getShots() {
+        return shots;
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
 
+    public int getxPos() {
+        return xPos;
     }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
 
+    public int getyPos() {
+        return yPos;
     }
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
 
+    public double getWidth() {
+        return width;
     }
 
-    @Override
-    public void mouseExited(MouseEvent e) {
 
+
+    public double getHeight() {
+        return height;
     }
+
+
+    public void setxSpeed(int xSpeed) {
+        this.xSpeed = xSpeed;
+    }
+
+
+    public void setySpeed(int ySpeed) {
+        this.ySpeed = ySpeed;
+    }
+
+
+    public int getHP() {
+        return HP;
+    }
+
+    public void setHP(int HP) {
+        this.HP = HP;
+    }
+
+    public int getXP() {
+        return XP;
+    }
+
+    public void setXP(int XP) {
+        this.XP = XP;
+    }
+
+
+
+    public boolean isImpactTriangle() {
+        return impactTriangle;
+    }
+
+
+
+    public int getAcceleration() {
+        return acceleration;
+    }
+
+
+
+    public boolean isDead() {
+        return dead;
+    }
+
 
 }
