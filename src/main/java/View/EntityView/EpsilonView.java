@@ -20,7 +20,8 @@ public class EpsilonView {
             g2d.setStroke(new BasicStroke(8));
             g.fillOval(epsilon.getxPos(), epsilon.getyPos(), (int) epsilon.getWidth(), (int) epsilon.getHeight());
             for (Shot shot : epsilon.getShots()) {
-                shot.paint(g);
+                ShotView shotView = new ShotView(shot);
+                shotView.paint(g);
             }
         } else {
             GamePanel.gameOver = true;

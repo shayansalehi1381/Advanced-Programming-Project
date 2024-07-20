@@ -14,18 +14,10 @@ public class Collectable {
     int yPos;
     public int width = 8;
 
-    public int getXPos() {
-        return xPos;
-    }
-
-    public int getYPos() {
-        return yPos;
-    }
-
     public int height = 8;
     int xSpeed;
     int ySpeed;
-    boolean catchedByEpsilon = false;
+    public boolean catchedByEpsilon = false;
     private static final long REMOVAL_DELAY = 10000;
     CollectableController collectableController = new CollectableController();
 
@@ -67,5 +59,11 @@ public class Collectable {
         yPos += ySpeed;
     }
 
+    public int getxPos() {
+        return xPos;
+    }
 
+    public int getyPos() {
+        return yPos;
+    }
 }

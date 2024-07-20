@@ -15,7 +15,7 @@ public class CollectableView extends Rectangle {
     public void paint(Graphics g){
         for (Collectable collectable:collectableController.getCollectables()){
             g.setColor(Color.white);
-            g.fillOval(collectable.getXPos(), collectable.getYPos(), collectable.width, collectable.height);
+            g.fillOval(collectable.getxPos(), collectable.getyPos(), collectable.width, collectable.height);
         }
 
     }

@@ -1,5 +1,6 @@
 package Model;
 
+import Controller.EpsilonController;
 import View.GameFrame;
 import View.GamePanel;
 
@@ -10,31 +11,31 @@ public class TrigorathEnemy extends Polygon {
 
     GameFrame gameFrame;
 
-    int HP = 15;
+   public int HP = 15;
 
-    int xP1 ;
-    int xP2 ;
-    int xP3 ;
-    int yP1 ;
-    int yP2 ;
-    int yP3 ;
-    int[] xPoints = new int[3];
-    int[] yPoints = new int[3];
-    int nPoints = 3; // Number of vertices
-    int speed;
+   public int xP1 ;
+   public int xP2 ;
+   public int xP3 ;
+   public int yP1 ;
+   public int yP2 ;
+   public int yP3 ;
+   public int[] xPoints = new int[3];
+   public int[] yPoints = new int[3];
+    public int nPoints = 3; // Number of vertices
+    public int speed;
 
-    boolean impactedWithEpsilon = false;
+    public boolean impactedWithEpsilon = false;
 
-    int lastSpeed;
+    public int lastSpeed;
 
     int ID;
     static int nextID = 1;
 
-    int xDeath;
-    int yDeath;
+   public int xDeath;
+   public int yDeath;
     int inside = 0;
 
-    static boolean mainImpact;
+   public static boolean mainImpact;
 
 
     public TrigorathEnemy(GameFrame gameFrame) {
@@ -180,18 +181,18 @@ public class TrigorathEnemy extends Polygon {
 
 
 
-    public boolean checkVerticesHitEpsilon(Epsilon epsilon) {
+    public boolean checkVerticesHitEpsilon(EpsilonController epsilonController) {
         for (int i = 0; i < nPoints; i++) {
-            double distance = Math.sqrt(Math.pow(xPoints[i] - epsilon.xPos, 2) + Math.pow(yPoints[i] - epsilon.yPos, 2));
+            double distance = Math.sqrt(Math.pow(xPoints[i] - epsilonController.getEpsilon().xPos, 2) + Math.pow(yPoints[i] - epsilonController.getEpsilon().yPos, 2));
             // If the distance is less than epsilon, return true
-            if (distance < epsilon.width) {
-                epsilon.handleImpact(this);
-                epsilon.HP -= 10;
-                if (!epsilon.dead){
+            if (distance < epsilonController.getEpsilon().width) {
+                epsilonController.handleImpact(this);
+                epsilonController.getEpsilon().HP -= 10;
+                if (!epsilonController.getEpsilon().dead){
                     gameFrame.gamePanel.playSE(gameFrame.gamePanel.getSound().damageSE);
                 }
-                if (epsilon.HP <= 0){
-                    epsilon.dead = true;
+                if (epsilonController.getEpsilon().HP <= 0){
+                    epsilonController.getEpsilon().dead = true;
                 }
                 return true;
             }

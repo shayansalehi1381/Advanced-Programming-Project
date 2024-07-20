@@ -1,5 +1,6 @@
 package Model;
 
+import Controller.SquareEnemyController;
 import Model.Collectable;
 import Model.Epsilon;
 import Model.SquareEnemy;
@@ -9,12 +10,13 @@ import View.GamePanel;
 
 import java.awt.*;
 
-public class Shot extends Rectangle {
-        Epsilon epsilon;
+public class Shot {
+    Epsilon epsilon;
     int xPos;
     int yPos;
-    int width = 5;
-    int height = 5;
+
+    public int width = 5;
+    public int height = 5;
     int speed = 10;
     boolean moving = false;
     int targetX;
@@ -25,17 +27,13 @@ public class Shot extends Rectangle {
     int ID;
     static int nextID = 1;
 
-    public Shot(Epsilon epsilon){
+    public Shot(Epsilon epsilon) {
         this.epsilon = epsilon;
         ID = nextID++;
         xPos = epsilon.xPos + 15;
         yPos = epsilon.yPos + 15;
     }
 
-    public void paint(Graphics g){
-        g.setColor(Color.MAGENTA);
-        g.fillOval(xPos,yPos,width,height);
-    }
     public void move() {
         if (moving) {
             xPos += directionX;
@@ -59,40 +57,6 @@ public class Shot extends Rectangle {
         directionY = (int) Math.round(normalizedDy);
         moving = true; // Start moving towards the target
     }
-
-    public void checkCollisionWithFrame(){
-        {
-            if (xPos + width >= epsilon.gameFrame.gamePanel.getX() + epsilon.gameFrame.gamePanel.getWidth()) {
-                GameFrame.collidRightWithShot = true;
-                GameFrame.collidLeftWithShot = false;
-
-            } else if (xPos <= epsilon.gameFrame.gamePanel.getX()) {
-                GameFrame.collidRightWithShot = false;
-                GameFrame.collidLeftWithShot = true;
-            } else {
-                GameFrame.collidRightWithShot = false;
-                GameFrame.collidLeftWithShot = false;
-            }
-        }
-
-        {
-            if (yPos <= epsilon.gameFrame.gamePanel.getY()){
-                GameFrame.collidUpWithShot = true;
-                GameFrame.collidDownWithShot = false;
-            }
-            else if (yPos + height >= epsilon.gameFrame.gamePanel.getY() + epsilon.gameFrame.gamePanel.getHeight()){
-                GameFrame.collidUpWithShot = false;
-                GameFrame.collidDownWithShot = true;
-            }
-            else {
-                GameFrame.collidUpWithShot = false;
-                GameFrame.collidDownWithShot = false;
-            }
-        }
-
-    }
-
-
 
     // Shot.java
     public void collidWithTriangle(TrigorathEnemy triangleEnemy) {
@@ -126,7 +90,8 @@ public class Shot extends Rectangle {
 
 
             for (SquareEnemy otherEnemy : GamePanel.squares) {
-                    otherEnemy.moveOtherSquaresBack(epsilon);
+                SquareEnemyController otherEnemyController = new SquareEnemyController(otherEnemy);
+                otherEnemyController.moveOtherSquaresBack(epsilon);
             }
 
             epsilon.shots.remove(this);
@@ -136,40 +101,47 @@ public class Shot extends Rectangle {
     }
 
 
-
-
-
-
-    public void collidWithSquare(SquareEnemy squareEnemy){
-        Rectangle bullet = new Rectangle(xPos,yPos,width,height);
-        Rectangle squareRect = new Rectangle(squareEnemy.xPos,squareEnemy.yPos,squareEnemy.width,squareEnemy.height);
-        if (bullet.intersects(squareRect)){
-            squareEnemy.HP -= 5;
+    public void collidWithSquare(SquareEnemyController squareEnemyController) {
+        Rectangle bullet = new Rectangle(xPos, yPos, width, height);
+        Rectangle squareRect = new Rectangle(squareEnemyController.squareEnemy.xPos, squareEnemyController.squareEnemy.yPos, squareEnemyController.squareEnemy.width, squareEnemyController.squareEnemy.height);
+        if (bullet.intersects(squareRect)) {
+            squareEnemyController.squareEnemy.HP -= 5;
             epsilon.gameFrame.gamePanel.playSE(epsilon.gameFrame.gamePanel.getSound().damageSE);
-            if (squareEnemy.HP <= 0){
+            if (squareEnemyController.squareEnemy.HP <= 0) {
                 epsilon.gameFrame.gamePanel.playSE(epsilon.gameFrame.gamePanel.getSound().killEnemySE);
-                squareEnemy.xDeath = squareEnemy.xPos;
-                squareEnemy.yDeath = squareEnemy.yPos;
-                new Collectable(squareEnemy);
-                GamePanel.squares.remove(squareEnemy);
+                squareEnemyController.squareEnemy.xDeath = squareEnemyController.squareEnemy.xPos;
+                squareEnemyController.squareEnemy.yDeath = squareEnemyController.squareEnemy.yPos;
+                new Collectable(squareEnemyController.squareEnemy);
+                GamePanel.squares.remove(squareEnemyController.squareEnemy);
             }
             epsilon.shots.remove(this);
-            squareEnemy.moveBack(epsilon);
+            squareEnemyController.moveBack(epsilon);
 
 
             for (SquareEnemy otherEnemy : GamePanel.squares) {
-                if (otherEnemy != squareEnemy) {
-                    otherEnemy.moveOtherSquaresBack(epsilon);
+                if (otherEnemy != squareEnemyController.squareEnemy) {
+                    SquareEnemyController otherEnemyController = new SquareEnemyController(otherEnemy);
+                    otherEnemyController.moveOtherSquaresBack(epsilon);
                 }
             }
 
-                TrigorathEnemy.mainImpact = false;
+            TrigorathEnemy.mainImpact = false;
             for (TrigorathEnemy otherEnemy : GamePanel.triangles) {
-                    otherEnemy.handleImpact(epsilon);
+                otherEnemy.handleImpact(epsilon);
             }
             TrigorathEnemy.mainImpact = true;
         }
     }
 
+    public int getxPos() {
+        return xPos;
+    }
+
+    public int getyPos() {
+        return yPos;
+    }
+    public Epsilon getEpsilon() {
+        return epsilon;
+    }
 
 }
