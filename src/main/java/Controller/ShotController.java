@@ -56,6 +56,7 @@ public class ShotController {
     }
 
     public void collidWithTriangle(TrigorathEnemy triangleEnemy) {
+        TrigorathEnemyController trigorathEnemyController = new TrigorathEnemyController(triangleEnemy);
         Rectangle bullet = new Rectangle(shot.getxPos(),shot.getyPos(), shot.width, shot.height);
         Polygon triangle = new Polygon(triangleEnemy.xPoints,triangleEnemy.yPoints, triangleEnemy.nPoints);
 
@@ -73,12 +74,13 @@ public class ShotController {
 
             // Apply impact effect to the hit triangle
             TrigorathEnemy.mainImpact = true;
-            triangleEnemy.handleImpact(shot.getEpsilon());
+            trigorathEnemyController.handleImpact(shot.getEpsilon());
             TrigorathEnemy.mainImpact = false;
             // Apply impact effect to other triangle enemies
             for (TrigorathEnemy otherEnemy : GamePanel.triangles) {
                 if (otherEnemy != triangleEnemy) {
-                    otherEnemy.handleImpact(shot.getEpsilon());
+                    TrigorathEnemyController otherEnemyController = new TrigorathEnemyController(otherEnemy);
+                    otherEnemyController.handleImpact(shot.getEpsilon());
                 }
             }
             TrigorathEnemy.mainImpact = true;
@@ -86,7 +88,7 @@ public class ShotController {
                 SquareEnemyController squareEnemyController = new SquareEnemyController(otherEnemy);
                 squareEnemyController.moveOtherSquaresBack(shot.getEpsilon());
             }
-            shot.getEpsilon().shots.remove(this);
+            shot.getEpsilon().shots.remove(this.shot);
         }
     }
 
@@ -103,7 +105,7 @@ public class ShotController {
                 new Collectable(squareEnemy);
                 GamePanel.squares.remove(squareEnemy);
             }
-            shot.getEpsilon().shots.remove(this);
+            shot.getEpsilon().shots.remove(this.shot);
             SquareEnemyController squareEnemyController = new SquareEnemyController(squareEnemy);
             squareEnemyController.moveBack(shot.getEpsilon());
 
@@ -116,7 +118,8 @@ public class ShotController {
 
             TrigorathEnemy.mainImpact = false;
             for (TrigorathEnemy otherEnemy : GamePanel.triangles) {
-                otherEnemy.handleImpact(shot.getEpsilon());
+                TrigorathEnemyController trigorathEnemyController = new TrigorathEnemyController(otherEnemy);
+                trigorathEnemyController.handleImpact(shot.getEpsilon());
             }
             TrigorathEnemy.mainImpact = true;
         }

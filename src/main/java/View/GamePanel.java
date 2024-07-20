@@ -8,6 +8,7 @@ import Model.SquareEnemy;
 import Model.TrigorathEnemy;
 import View.EntityView.CollectableView;
 import View.EntityView.EnemyView.SquareEnemyView;
+import View.EntityView.EnemyView.TrigorathEnemyView;
 import View.EntityView.EpsilonView;
 
 import javax.swing.*;
@@ -159,7 +160,8 @@ public class GamePanel extends JPanel implements KeyListener{
         epsilonView.paint(g);
         for (int i = 0; i < triangles.size(); i++) {
             TrigorathEnemy trigorathEnemy = triangles.get(i);
-            trigorathEnemy.paint(g);
+            TrigorathEnemyView trigorathEnemyView = new TrigorathEnemyView(trigorathEnemy);
+            trigorathEnemyView.paint(g);
         }
         for (int i = 0; i < squares.size(); i++) {
             SquareEnemy squareEnemy = squares.get(i);
@@ -217,7 +219,8 @@ public class GamePanel extends JPanel implements KeyListener{
     public void move(){
         epsilonController.getEpsilon().move();
         for (TrigorathEnemy trigorathEnemy:triangles){
-            trigorathEnemy.moveTowardsEpsilon(epsilonController.getEpsilon());
+            TrigorathEnemyController trigorathEnemyController = new TrigorathEnemyController(trigorathEnemy);
+            trigorathEnemyController.moveTowardsEpsilon(epsilonController.getEpsilon());
 
         }
 
@@ -263,11 +266,11 @@ public class GamePanel extends JPanel implements KeyListener{
 
             }
 
-
+            ShotController shotController = new ShotController(shot,this);
             // shots hit the triangles
             for (int j = 0; j < triangles.size(); j++) {
                 TrigorathEnemy trigorathEnemy = triangles.get(j);
-               shot.collidWithTriangle(trigorathEnemy);
+               shotController.collidWithTriangle(trigorathEnemy);
             }
 
 
@@ -275,8 +278,7 @@ public class GamePanel extends JPanel implements KeyListener{
             // shots hit the squares
             for (int j = 0; j < squares.size(); j++) {
                 SquareEnemy squareEnemy = squares.get(j);
-                SquareEnemyController squareEnemyController = new SquareEnemyController(squareEnemy);
-                shot.collidWithSquare(squareEnemyController);
+                shotController.collidWithSquare(squareEnemy);
             }
 
             break;
@@ -286,7 +288,8 @@ public class GamePanel extends JPanel implements KeyListener{
         //triangles hit the epsilon
         for (int i = 0; i < triangles.size(); i++) {
             TrigorathEnemy trigorathEnemy = triangles.get(i);
-            trigorathEnemy.checkVerticesHitEpsilon(epsilonController);
+            TrigorathEnemyController trigorathEnemyController = new TrigorathEnemyController(trigorathEnemy);
+            trigorathEnemyController.checkVerticesHitEpsilon(epsilonController);
         }
 
 
